@@ -18,12 +18,11 @@ const LiquidityPage: React.FunctionComponent = () => {
         <SwapLiquidityButtons />
         
         <LiquidityCard state={state} dispatch={dispatch} />
-        <SettingsCard></SettingsCard>
+        {   
+            state.settingsCard &&  <SettingsCard dispatch={dispatch} ></SettingsCard>
+        }
         {
-            state.currencyCard.show && state.currencyCard.number  ? 
-            <SelectCurrencyCard dispatch={dispatch} number={state.currencyCard.number}  />
-            :
-            null
+            state.currencyCard.show && state.currencyCard.number && <SelectCurrencyCard dispatch={dispatch} number={state.currencyCard.number}  />
         }
     </Page>
 )}

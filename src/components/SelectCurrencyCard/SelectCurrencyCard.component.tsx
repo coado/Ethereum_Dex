@@ -6,10 +6,6 @@ import { Row } from './Row/Row.component';
 import { Action, ActionTypes } from '../../hooks/useCardReducer/Actions';
 import styled, { keyframes } from 'styled-components';
 
-interface SelectCurrencyCardInterface {
-    number: number;
-    dispatch: (args: Action) => void;
-}
 
 // STYLES
 
@@ -41,12 +37,10 @@ const Header = styled.div`
     }
 `
 const show = keyframes`
-0% {
-    transform: translateY(-5rem);
+  0% {
     opacity: 0;
   }
   100% {
-    transform: translateY(0);
     opacity: 1;
   }
 `
@@ -147,9 +141,12 @@ export const Icon = styled.img`
 `
 ////////////////////////////////////////////////////////////////////////////////
 
+interface ISelectCurrencyCard {
+    number: number;
+    dispatch: (args: Action) => void;
+}
 
-
-export const SelectCurrencyCard: React.FunctionComponent<SelectCurrencyCardInterface> = ({ dispatch, number }) => {
+export const SelectCurrencyCard: React.FunctionComponent<ISelectCurrencyCard> = ({ dispatch, number }) => {
     const context = useWeb3Context()
     const { networkId } = context
 

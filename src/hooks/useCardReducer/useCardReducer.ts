@@ -19,6 +19,7 @@ export interface State {
         show: boolean;
         number?: number;
      };
+     settingsCard: boolean;
 }
 
 const initialState: State = {
@@ -40,7 +41,8 @@ const initialState: State = {
     },
     currencyCard: {
         show: false,
-    }
+    },
+    settingsCard: false
 }  
 
 
@@ -99,6 +101,12 @@ function reducer(state: State, action: Action) {
                     number: action.payload.number
                 }
             }
+        case ActionTypes.SET_SETTINGS_CARD:
+            return {
+                ...state,
+                settingsCard: action.payload
+            }
+        
         case ActionTypes.SET_TOKENS_DATA: 
             return {
                 ...state,

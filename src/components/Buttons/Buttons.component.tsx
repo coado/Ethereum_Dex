@@ -3,18 +3,22 @@ import styled from 'styled-components';
 
 interface IBtn {
   buttonWidth?: number;
+  backgroundColor?: string | null;
 }
 
-export const DefaultButton = styled.button<IBtn>`
-    border: none;
+const Button = styled.button`
+  border: none;
+  cursor: pointer;
+  font-family: 'Baloo 2', cursive;
+`
+
+export const DefaultButton = styled(Button)<IBtn>`
     color: black;
     background: #12eba7;
     width: ${props => props.buttonWidth || 100}%;
     padding: 0.8rem 0;
     opacity: 0.8;
     border-radius: 0.5rem;
-    cursor: pointer;
-    font-family: 'Baloo 2', cursive;
     letter-spacing: 0.1rem;
     margin-bottom: 2rem;
     transition: all 0.2s;
@@ -30,17 +34,13 @@ export const DefaultButton = styled.button<IBtn>`
   }
 
 `
-export const ReflectButton = styled.button`
+export const ReflectButton = styled(Button)`
   font-size: 1rem;
-  text-decoration: none;
-  border: none;
-  background-color: #12eba7;
+  background: #12eba7;
   border-radius: 0.5rem;
   padding: 0.4rem 1.5rem;
   margin: 0 1rem;
-  cursor: pointer;
   color: rgb(27, 25, 25);
-  font-family: 'Baloo 2', cursive;
   box-shadow: 0 0 5px #12eba7, 0 0 20px #12eba7, 0 0 40px #12eba7,
     0 0 1000px #12eba7;
   -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
@@ -49,5 +49,21 @@ export const ReflectButton = styled.button`
   &:hover {
     box-shadow: 0 0 20px #12eba7, 0 0 65px #12eba7, 0 0 100px #12eba7,
       0 0 400px #12eba7;
+  }
+`
+
+export const SlippageButton = styled(Button)<IBtn>`
+  padding: 0.2rem 0.5rem;
+  border: 2px solid #12eba7;
+  border-radius: 1rem;
+  font-size: 1rem;
+  color: ${ props => props.backgroundColor ? '#000000' : '#538978'};
+  background-color: ${props => props.backgroundColor || 'transparent'};
+  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+  box-shadow: ${props => props.backgroundColor ? `0 0 5px ${props.backgroundColor}, 0 0 20px ${props.backgroundColor}, 0 0 40px ${props.backgroundColor},0 0 1000px ${props.backgroundColor}` : null};
+  transition: all .2s;
+
+  &:hover {
+    background: ${props => props.backgroundColor ? null : 'rgba(255, 255, 255, .1)'};
   }
 `

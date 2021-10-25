@@ -114,8 +114,10 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
 
                 <h1> Add Liquidity </h1>
 
-                <SettingsIconContainer>
-
+                <SettingsIconContainer onClick={() => dispatch({
+                    type: ActionTypes.SET_SETTINGS_CARD,
+                    payload: true
+                })}>
                     <SettingsSign />
                 </SettingsIconContainer>
         </CardHeader>
