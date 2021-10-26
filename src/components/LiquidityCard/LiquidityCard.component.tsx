@@ -86,24 +86,48 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
     }
 
     const callAddLiquidity = async () => {
-        let routerAddress: string;
-        if (!networkId || !token1Address || !token2Address || !inputToken2.current || !account) return
+        try {
+            let routerAddress: string;
+            if (!networkId || !token1Address || !token2Address || !inputToken2.current || !account) return
 
-        const contracts = getContractsAddresses(networkId)
-        routerAddress = contracts.Router
-        let deadline = Date.now()+(20*60*1000)
-        await addLiquidity(
-            library, 
-            routerAddress, 
-            token1Address, 
-            token2Address,
-            inputToken1,
-            inputToken2.current.value,
-            "1",
-            "1",
-            account,
-            deadline
+            type Settings = {
+                slippage: number;
+                deadline: number;
+            }
+
+            let token1MinAmount: string = "1"
+            let token2MinAmount: string = "1"
+            let deadline = Date.now()+(20*60*1000)
+
+            const storageData = window.localStorage.getItem('settings');
+            let settings: Settings
+            if (storageData) {
+                settings = JSON.parse(storageData)                
+                token1MinAmount = String(Number(inputToken1)-Number(inputToken1)*(settings.slippage / 100)) 
+                token2MinAmount = String(Number(inputToken2.current.value)-Number(inputToken2.current.value)*(settings.slippage / 100)) 
+                deadline = Date.now()+(settings.deadline*60*1000)
+            }
+            console.log(token1MinAmount, token2MinAmount, deadline);
+            
+        
+            const contracts = getContractsAddresses(networkId)
+            routerAddress = contracts.Router
+
+            await addLiquidity(
+                library, 
+                routerAddress, 
+                token1Address, 
+                token2Address,
+                inputToken1,
+                inputToken2.current.value,
+                token1MinAmount,
+                token2MinAmount,
+                account,
+                deadline
             )
+        } catch(error) {
+            console.error(error)
+        }
         
     }
 

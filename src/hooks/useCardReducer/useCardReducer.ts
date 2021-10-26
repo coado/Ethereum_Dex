@@ -20,6 +20,10 @@ export interface State {
         number?: number;
      };
      settingsCard: boolean;
+     settings: {
+         slippage: number;
+         deadline: number;
+     }
 }
 
 const initialState: State = {
@@ -42,7 +46,11 @@ const initialState: State = {
     currencyCard: {
         show: false,
     },
-    settingsCard: false
+    settingsCard: false,
+    settings: {
+        slippage: 0.5,
+        deadline: 20
+    }
 }  
 
 
@@ -105,6 +113,15 @@ function reducer(state: State, action: Action) {
             return {
                 ...state,
                 settingsCard: action.payload
+            }
+
+        case ActionTypes.SET_SETTINGS:
+            return {
+                ...state,
+                settings: {
+                    slippage: action.payload.slippage,
+                    deadline: action.payload.deadline
+                }
             }
         
         case ActionTypes.SET_TOKENS_DATA: 

@@ -6,6 +6,7 @@ export enum ActionTypes {
     SET_SETTINGS_CARD,
     SET_TOKENS_DATA,
     SET_PAIR_ADDRESS,
+    SET_SETTINGS,
     EXCHANGE_CURRENCIES,
     TOKEN1_LIQUIDITY_FUNCTION
 }
@@ -44,6 +45,14 @@ export interface SetTokensData {
     payload: { [key: string]: number};
 }
 
+export interface SetSettings {
+    type: ActionTypes.SET_SETTINGS;
+    payload: {
+        slippage: number;
+        deadline: number;
+    }
+}
+
 export interface SetPairAddress {
     type: ActionTypes.SET_PAIR_ADDRESS;
     payload: {
@@ -59,4 +68,4 @@ export interface ExchangeCurrencies {
     type: ActionTypes.EXCHANGE_CURRENCIES;
 }
 
-export type Action = SelectToken1 | SelectToken2 | SetCurrencyCard |  SetTokensData | SetPairAddress | ExchangeCurrencies | SetSettingsCard;
+export type Action = SelectToken1 | SelectToken2 | SetCurrencyCard |  SetTokensData | SetPairAddress | ExchangeCurrencies | SetSettingsCard |  SetSettings;

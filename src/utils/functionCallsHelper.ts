@@ -58,8 +58,8 @@ export const addLiquidity = async (
     token2Address: string,
     token1Value: string,
     token2Value: string,
-    slippageToken1: string,
-    slippageToken2: string,
+    toke1MinAmount: string,
+    token2MinAmount: string,
     to: string,
     deadline: number
     ) => {
@@ -72,8 +72,8 @@ export const addLiquidity = async (
                 token2Address,
                 library.utils.toWei(token1Value, 'ether'), 
                 library.utils.toWei(token2Value, 'ether'), 
-                library.utils.toWei(slippageToken1, 'ether'), 
-                library.utils.toWei(slippageToken2, 'ether'), 
+                library.utils.toWei(toke1MinAmount, 'ether'), 
+                library.utils.toWei(token2MinAmount, 'ether'), 
                 to, 
                 deadline
                 ).send({from: to})

@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react'
-import styled, { keyframes } from 'styled-components'
+import React, { useRef, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { SlippageButton } from '../Buttons/Buttons.component'; 
-import { ActionTypes, Action } from '../../hooks/useCardReducer/Actions'
+import { ActionTypes, Action } from '../../hooks/useCardReducer/Actions';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { filterInputText } from '../../utils/filterInputText';
 
 const Container = styled.div`
     width: 100vw;
@@ -100,36 +102,48 @@ interface ISettingsCard {
 }
 
 export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch }) => {
-    const [slippageValue, setSlippageValue] = useState(0.1)
+    const [storedValue, setValue] = useLocalStorage('settings', {slippage: 0.5, deadline: 20})
+
+    const [ slippage, setSlippage ] = useState(storedValue.slippage)
+    const [ deadline, setDeadline ] = useState(storedValue.deadline)
 
     let cardRef = useRef<HTMLDivElement>(null)
+
     
     const mouseClickHandling = (e: React.MouseEvent<HTMLDivElement>) => {
         let target: any = e.target
 
         if ( cardRef.current && !cardRef.current.contains(target)) {
-            dispatch({
-                type: ActionTypes.SET_SETTINGS_CARD,
-                payload: false
-            })
+            closeHandling()
         }
+    }
+
+    const closeHandling = () => {
+        setValue({
+            slippage,
+            deadline
+        })
+        dispatch({
+            type: ActionTypes.SET_SETTINGS_CARD,
+            payload: false
+        })
     }
     
     return (
     <Container onClick={mouseClickHandling} >
         <Card ref={cardRef} >
             <Text fontSize={1.5}  letterSpacing={0.3} margin='1rem 0 0 0' >SETTINGS</Text>
-            <CloseSign onClick={() => dispatch({ type: ActionTypes.SET_SETTINGS_CARD,   payload: false  })}> &#10006; </CloseSign>
+            <CloseSign onClick={closeHandling}> &#10006; </CloseSign>
             <Wrapper widthInPercent={100} margin='2rem 0 0 0' >
                 <Wrapper direction='column' widthInPercent={70} justify='center' margin='0 0 0 2rem'>
                     <Text margin='0 0 1.5rem 0'>Slippage Tolerance</Text>
                     <Wrapper widthInPercent={100} justify='space-around'>
-                        <SlippageButton onClick={() => setSlippageValue(0.1)} backgroundColor={slippageValue === 0.1 ? '#12eba7' : null} >0.1%</SlippageButton>
-                        <SlippageButton onClick={() => setSlippageValue(0.5)} backgroundColor={slippageValue === 0.5 ? '#12eba7' : null} >0.5%</SlippageButton>
-                        <SlippageButton onClick={() => setSlippageValue(1)} backgroundColor={slippageValue === 1 ? '#12eba7' : null} >1.00%</SlippageButton>
+                        <SlippageButton onClick={() => setSlippage(0.1)} backgroundColor={slippage === 0.1 ? '#12eba7' : null} >0.1%</SlippageButton>
+                        <SlippageButton onClick={() => setSlippage(0.5)} backgroundColor={slippage === 0.5 ? '#12eba7' : null} >0.5%</SlippageButton>
+                        <SlippageButton onClick={() => setSlippage(1)} backgroundColor={slippage === 1 ? '#12eba7' : null} >1.00%</SlippageButton>
 
                         <Wrapper>
-                            <Input placeholder={String(slippageValue)} onChange={e => setSlippageValue(Number(e.target.value))} ></Input>
+                            <Input onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => filterInputText(e)} maxLength={4} placeholder={String(slippage)} onChange={e => setSlippage(Number(e.target.value))} autoComplete='off' autoCorrect='off' ></Input>
                             <Text>&nbsp;%</Text>
                         </Wrapper>
                     </Wrapper>    
@@ -138,7 +152,7 @@ export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch 
                 <Wrapper direction='column' widthInPercent={50} justify='center'>
                     <Text margin='0 0 1.5rem 0'>Deadline</Text>
                     <Wrapper>
-                        <Input></Input>
+                        <Input onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => filterInputText(e)} value={deadline} maxLength={4} placeholder={String(deadline)} onChange={e => setDeadline(Number(e.target.value))} autoComplete='off' autoCorrect='off' ></Input>
                         <Text>&nbsp;Min</Text>
                     </Wrapper>
                 </Wrapper> 

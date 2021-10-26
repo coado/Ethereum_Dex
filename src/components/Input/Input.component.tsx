@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { filterInputText } from '../../utils/filterInputText';
 
 interface Props {
     disabled?: boolean;
@@ -34,17 +35,8 @@ const InputValue = styled.input`
 `
 
 
-export const Input = React.forwardRef<HTMLInputElement, Props>(( { disabled, setInput, value }, ref ) => {
-    
-    const filterInputText = async (e: React.KeyboardEvent<HTMLInputElement>): Promise<void> => {
-        if (!/^[0-9]*[.,]?[0-9]*$/.test(e.key) || (e.target as HTMLInputElement).value.length > 80) {
-            e.preventDefault();
-        }
-        
-    }
-    
-    return (
+export const Input = React.forwardRef<HTMLInputElement, Props>(( { disabled, setInput, value }, ref ) => (
         <InputContainer>
             <InputValue value={value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput ? setInput(e.target.value) : null} disabled={disabled} ref={ref} spellCheck='false' onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => filterInputText(e)} placeholder='0.0' required type='text' pattern='^[0-9]*[.,]?[0-9]*$' autoComplete='off' inputMode='decimal' autoCorrect='off' />
         </InputContainer>
-)});
+));
