@@ -45,7 +45,7 @@ export interface SetTokensData {
     payload: { [key: string]: number};
 }
 
-export interface SetSettings {
+export interface SetSettings { 
     type: ActionTypes.SET_SETTINGS;
     payload: {
         slippage: number;
@@ -68,4 +68,4 @@ export interface ExchangeCurrencies {
     type: ActionTypes.EXCHANGE_CURRENCIES;
 }
 
-export type Action = SelectToken1 | SelectToken2 | SetCurrencyCard |  SetTokensData | SetPairAddress | ExchangeCurrencies | SetSettingsCard |  SetSettings;
+export type Action = SelectToken1 | SelectToken2 | SetCurrencyCard |  SetTokensData | SetPairAddress | ExchangeCurrencies | SetSettingsCard | SetSettings;

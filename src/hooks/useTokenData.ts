@@ -7,7 +7,7 @@ import { Action, ActionTypes } from './useCardReducer/Actions';
 import { Web3Context } from 'web3-react/dist/context';
 
 
-const useTokenData = (
+export const useTokenData = (
     token1: string | null,
     token2: string | null,
     dispatch: React.Dispatch<Action>): void => {
@@ -25,6 +25,7 @@ const useTokenData = (
 
     useEffect(() => {
         let token1Balance: number = 0, token2Balance: number = 0, token1Allowance: number, token2Allowance: number
+        
         async function getBalance() {
             try {
         
@@ -83,6 +84,4 @@ const useTokenData = (
 
 
 }
-
-export default useTokenData;
 

@@ -4,8 +4,9 @@ import { useWeb3Context  } from 'web3-react'
 import './App.css';
 
 import { PageHeader } from './components/Header/Header.component';
-import SwapPage from './pages/SwapPage/SwapPage';
-import LiquidityPage from './pages/LiquidityPage/LiquidityPage';
+import { SwapPage } from './pages/SwapPage/SwapPage';
+import { LiquidityPage } from './pages/LiquidityPage/LiquidityPage';
+
 
 function App() {
 

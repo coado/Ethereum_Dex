@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { SlippageButton } from '../Buttons/Buttons.component'; 
 import { ActionTypes, Action } from '../../hooks/useCardReducer/Actions';
@@ -48,11 +48,12 @@ interface IWrapper {
     widthInPercent?: number;
     justify?: string;
     margin?: string;
+    align?: string;
 }
 
 const Wrapper = styled.div<IWrapper>`
     display: flex;
-    align-items: center;
+    align-items: ${props => props.align || 'center'};
     flex-direction: ${props => props.direction};
     width: ${props => `${props.widthInPercent}%`};
     justify-content: ${props => props.justify};
@@ -81,10 +82,14 @@ const Text = styled.h1<IText>`
     letter-spacing: ${props => `${props.letterSpacing}rem`};
 `
 
-const Input = styled.input`
+interface IInput {
+    borderColor?: string | null;
+}
+
+const Input = styled.input<IInput>`
         width: 2.5rem;
         background-color: transparent;
-        border: 2px solid #12eba7;
+        border: ${props => props.borderColor ? `2px solid ${props.borderColor}` : '2px solid #12eba7'};
         border-radius: 1rem;
         padding: 0.4rem 0.4rem;
         font-size: 1rem;
@@ -106,6 +111,15 @@ export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch 
 
     const [ slippage, setSlippage ] = useState(storedValue.slippage)
     const [ deadline, setDeadline ] = useState(storedValue.deadline)
+    const [ slippageAlert, setSlippageAlert ] = useState('')
+
+    useEffect(() => {
+        if (slippage <= 0) setSlippageAlert('Your transaction may fail!')
+        else if (slippage >= 50) setSlippageAlert('Slippage tolerance value is too high!')
+        else if (slippage >= 5) setSlippageAlert('Your transaction may be frontrun!')
+        else setSlippageAlert('')
+        
+    }, [slippage])
 
     let cardRef = useRef<HTMLDivElement>(null)
 
@@ -119,11 +133,21 @@ export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch 
     }
 
     const closeHandling = () => {
+        // saving data in local storage
         setValue({
             slippage,
             deadline
         })
+        // passing data to reducer
         dispatch({
+            type: ActionTypes.SET_SETTINGS,
+            payload: {
+                slippage,
+                deadline
+            }
+        })
+        // closing card
+            dispatch({
             type: ActionTypes.SET_SETTINGS_CARD,
             payload: false
         })
@@ -143,7 +167,7 @@ export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch 
                         <SlippageButton onClick={() => setSlippage(1)} backgroundColor={slippage === 1 ? '#12eba7' : null} >1.00%</SlippageButton>
 
                         <Wrapper>
-                            <Input onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => filterInputText(e)} maxLength={4} placeholder={String(slippage)} onChange={e => setSlippage(Number(e.target.value))} autoComplete='off' autoCorrect='off' ></Input>
+                            <Input borderColor={slippage >= 50 ? '#F22323' : null} value={slippage} onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => filterInputText(e)} maxLength={4} placeholder={String(slippage)} onChange={e => setSlippage(Number(e.target.value))} autoComplete='off' autoCorrect='off' ></Input>
                             <Text>&nbsp;%</Text>
                         </Wrapper>
                     </Wrapper>    
@@ -157,6 +181,9 @@ export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch 
                     </Wrapper>
                 </Wrapper> 
             </Wrapper> 
+            <Wrapper widthInPercent={100} direction='column' align='flex-start' >
+                <Text margin='1rem 0 0 2rem' fontSize={0.8}> {slippageAlert}  </Text>                
+            </Wrapper>
         </Card>
     </Container>
 )}

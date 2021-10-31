@@ -36,13 +36,17 @@ export const SettingsSign = styled(Settings)`
   transition: all 0.3s;
 `
 
-export const SettingsIconContainer = styled.div`
+interface ISettingsIconContainer {
+  backgroundColor?: string | null;
+}
+
+export const SettingsIconContainer = styled.div<ISettingsIconContainer>`
     width: 2rem;
     height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #12eba7;
+    background-color: ${props => props.backgroundColor || '#12eba7'};
     opacity: 0.6;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -264,6 +268,18 @@ export const Footer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 1rem;
+`
+interface IText {
+  margin?: string;
+  fontSize?: number;
+  letterSpacing?: number;
+}
+
+export const Text = styled.h1<IText>`
+  font-size: ${props => props.fontSize ? `${props.fontSize}rem` : '1rem'};
+  color: #12eba7;
+  margin: ${props => props.margin};
+  letter-spacing: ${props => `${props.letterSpacing}rem`};
 `
 
 // base color rgba(18, 235, 167, 0.8)

@@ -12,7 +12,7 @@ export const getErc20Contract = (library: Library, address: string) => createCon
 
 // Router Contracts
 export const getAddLiquidityContract = (library: Library, address: string) => createContract(library, RouterABI.addLiquidityABI, address)
-
+export const getSwapTokensContract = (library: Library, address: string) => createContract(library, RouterABI.swapTokens, address)
 // Factory Contracts
 export const getPairContract = (library: Library, routerAddress: string) => createContract(library, FactoryABI.getPairABI, routerAddress)
 // Pair Contracts

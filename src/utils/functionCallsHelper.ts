@@ -50,6 +50,30 @@ export const getReserves = async (library: Library, pairAddress: string) => {
         console.error(error);
     }
 }
+// Router Functions
+
+export const swapTokens = async (
+    library: Library, 
+    routerAddress: string,
+    amountsIn: string,
+    minAmountsIn: string,
+    path: string[],
+    to: string,
+    deadline: number
+    ) => {
+    try {
+        const contract = contractHelper.getSwapTokensContract(library, routerAddress)
+        await contract.methods.swapExactTokensForTokens(
+                        library.utils.toWei(amountsIn, 'ether'),
+                        library.utils.toWei(minAmountsIn, 'ether'), 
+                        path,   
+                        to, 
+                        deadline
+                    ).send({from: to})
+    } catch(error) {    
+        console.error(error)
+    }
+}
 
 export const addLiquidity = async (
     library: Library,

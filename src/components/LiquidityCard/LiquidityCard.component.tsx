@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, ReactElement } from 'react';
 import { useWeb3Context  } from 'web3-react';
 // COMPONENTS
 import { Input } from '../Input/Input.component';
@@ -23,21 +23,21 @@ import { Card,
         Footer } from '../Card/Card.component';
 
 // HOOKS
-import useTokenData from '../../hooks/useTokenData';
+import { useTokenData } from '../../hooks/useTokenData';
 import { useGetPair } from '../../hooks/useGetPair';
 import { useButtonState } from '../../hooks/useButtonState';
 import { useReserves } from '../../hooks/useReserves';
 // UTILS
 import { MaxUint256 } from '../../MaxUint256';
-import { getTokenAddress, getContractsAddresses } from '../../utils/networksDataHelper'
+import { getContractsAddresses } from '../../utils/networksDataHelper'
 import { approve, addLiquidity } from '../../utils/functionCallsHelper';
-// INTERFACE
+// INTERFACES
 import { State } from '../../hooks/useCardReducer/useCardReducer';
 import { ActionTypes, Action } from '../../hooks/useCardReducer/Actions';
 
 interface LiquidityCardInterface {
     state: State,
-    dispatch: (arg: Action) => void;
+    dispatch: React.Dispatch<Action>;
 }
 
 export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
@@ -52,7 +52,8 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
             token2Address, 
             token2Allowance, 
             pair, 
-            alerts
+            alerts,
+            settings
         }, 
         dispatch }
     ) => {
@@ -74,6 +75,7 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
             inputToken2.current.value = String( (reserves.reserve1 / reserves.reserve0) * Number(inputToken1))
         } 
     }, [inputToken1])
+
 
     const handleConnectWallet = () => {
         context.setConnector('MetaMask')
@@ -98,18 +100,18 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
             let token1MinAmount: string = "1"
             let token2MinAmount: string = "1"
             let deadline = Date.now()+(20*60*1000)
-
             const storageData = window.localStorage.getItem('settings');
+            
             let settings: Settings
             if (storageData) {
                 settings = JSON.parse(storageData)                
+                if (settings.slippage >= 100) throw Error
                 token1MinAmount = String(Number(inputToken1)-Number(inputToken1)*(settings.slippage / 100)) 
                 token2MinAmount = String(Number(inputToken2.current.value)-Number(inputToken2.current.value)*(settings.slippage / 100)) 
                 deadline = Date.now()+(settings.deadline*60*1000)
             }
-            console.log(token1MinAmount, token2MinAmount, deadline);
             
-        
+            
             const contracts = getContractsAddresses(networkId)
             routerAddress = contracts.Router
 
@@ -138,7 +140,7 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
 
                 <h1> Add Liquidity </h1>
 
-                <SettingsIconContainer onClick={() => dispatch({
+                <SettingsIconContainer backgroundColor={settings.slippage >= 50 ? '#f7287b' : null} onClick={() => dispatch({
                     type: ActionTypes.SET_SETTINGS_CARD,
                     payload: true
                 })}>
@@ -241,16 +243,16 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
                         <ApproveWrapper>
                             <ApproveText>Approve</ApproveText>
                             <CardButton buttonWidth={75} disabled={token1Allowance > Number(inputToken1)} onClick={() => {
-                                if (!networkId) return
-                                callApprove(getTokenAddress(token1, networkId))
+                                if (!networkId || !token1Address) return
+                                callApprove(token1Address)
                             }} text={token1} />
                         </ApproveWrapper>
                             
                         <ApproveWrapper>
                             <ApproveText>Approve</ApproveText>
                             <CardButton buttonWidth={75} disabled={ token2Allowance > Number(inputToken2.current ? inputToken2.current.value : 0) } onClick={() => {
-                                if (!networkId) return
-                                callApprove(getTokenAddress(token2, networkId))
+                                if (!networkId || !token2Address) return
+                                callApprove(token2Address)
                             }} text={token2} />
                         </ApproveWrapper>
                 </ApproveButtons>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Library } from 'web3-react/dist/context';
 import { getReserves } from '../utils/functionCallsHelper';
 
-type Reserves = {
+export type Reserves = {
     reserve0: number;
     reserve1: number;
 }
@@ -35,7 +35,7 @@ export const useReserves = (
                 
                 if (data._token0 === token1Address) {
                     reserve0 = prepareReserve(data._reserve0)
-                    reserve1 = prepareReserve(data._reserve1)
+                    reserve1 = prepareReserve(data._reserve1)      
                 } else {
                     reserve0 = prepareReserve(data._reserve1)
                     reserve1 = prepareReserve(data._reserve0)
@@ -46,6 +46,7 @@ export const useReserves = (
                 })
             }).catch((error: Error) => console.error(error))
         } 
+        
     }, [pairAddress, token1Address])
     return reserves;    
 }  

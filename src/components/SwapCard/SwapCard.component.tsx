@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useWeb3Context  } from 'web3-react';
 // COMPONENTS
 import { Input } from '../Input/Input.component';
@@ -12,37 +12,84 @@ import { Card,
         Icon,
         Dash,
         SelectSign,
+        PoolStats,
         ChangeTokens,
         Balance,
         Footer,
         ArrowSign,
-        SettingsSign
+        SettingsSign,
+        Text
     } from '../Card/Card.component';
-// HOOKES
+// HOOKS
+import { useTokenData } from '../../hooks/useTokenData';
+import { useGetPair } from '../../hooks/useGetPair';
 import { useButtonState } from '../../hooks/useButtonState';
-// INTERFACE
+import { useReserves } from '../../hooks/useReserves';
+// UTILS
+import { getContractsAddresses } from '../../utils/networksDataHelper'
+import { approve, swapTokens } from '../../utils/functionCallsHelper';
+import { MaxUint256 } from '../../MaxUint256';
+// INTERFACES
+import { State } from '../../hooks/useCardReducer/useCardReducer';
 import { Action, ActionTypes } from '../../hooks/useCardReducer/Actions';
 
 interface SwapCardInterface {
-    token1: string | null;
-    token2: string | null;
-    token1Balance: number;
-    token2Balance: number;
+    state: State;
     dispatch: (arg: Action) => void;
 }
 
-export const SwapCard: React.FunctionComponent<SwapCardInterface> = ({ token1, token2, token1Balance, token2Balance, dispatch}) => {
-
+export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
+    {
+        state: {
+            token1, 
+            token2, 
+            token1Balance, 
+            token2Balance,
+            token1Allowance,
+            token1Address,
+            token2Address,
+            pair,
+            alerts,
+            settings
+        },
+        dispatch
+    }
+     ) => {
+    const context = useWeb3Context()
+    const { active, library, account, networkId } = context
+       
+        
     const [inputToken1, setInputToken1] = useState('')
     const inputToken2 = useRef<HTMLInputElement>(null);
     
-    const context = useWeb3Context()
-    // const { active } = context
-
-    // const buttonText = useButtonText(token1, token2, inputToken1, null, token1Balance, null)
+    useTokenData(token1, token2, dispatch)
+    useGetPair(token1, token2, dispatch)
+    const reserves = useReserves(pair.pairAddress, pair.exist, token1Address, library)
+    const buttonState = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance, reserves)
+        
+    useEffect(() => {
+        if (inputToken2.current && reserves && pair.exist) {
+            // algorithm for calculating dy - token2 price
+            inputToken2.current.value = String( Math.round(((reserves.reserve1*Number(inputToken1)) / (reserves.reserve0 + Number(inputToken1)))*100)/100 )
+        } 
+    }, [inputToken1])
 
     const handleConnectWallet = () => {
         context.setConnector('MetaMask')
+    }
+
+    const callApprove = async (tokenAddress: string) => {
+        if (!networkId || !account) return;
+        const contracts = getContractsAddresses(networkId)
+        await approve(library, tokenAddress, contracts.Router, library.utils.fromWei(MaxUint256, 'ether'), account)
+    }
+
+    const callSwapTokens = async () => {
+        if (!networkId || !inputToken2.current || !token1Address || !token2Address || !account) return
+        const contracts = getContractsAddresses(networkId)
+        let minAmountsIn = String((Math.round((Number(inputToken2.current.value) * ((100-settings.slippage)/100))*1000))/1000)
+        let deadline = Date.now()+(settings.deadline*60*1000)
+        await swapTokens(library, contracts.Router, inputToken1, minAmountsIn, [token1Address, token2Address], account, deadline)
     }
     
     return (
@@ -51,12 +98,16 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = ({ token1, t
 
             <h1> Swap Tokens </h1>
 
-            <SettingsIconContainer>
+            <SettingsIconContainer  backgroundColor={settings.slippage >= 50 ? '#f7287b' : null} 
+                onClick={() => dispatch({
+                    type: ActionTypes.SET_SETTINGS_CARD,
+                    payload: true
+                })}>
                 <SettingsSign />
             </SettingsIconContainer>
         </CardHeader>
         <CurrencyWrapper>
-            <Input setInput={setInputToken1} ref={inputToken2} />
+            <Input setInput={setInputToken1} value={inputToken1} />
             <SelectedToken onClick={() => dispatch({type: ActionTypes.SET_CURRENCY_CARD, payload: {show: true, number: 1}})}>
                 {
                     token1 ?
@@ -75,7 +126,6 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = ({ token1, t
         <Balance>
                 <span onClick={() => {
                     if (!inputToken2.current) return
-                    inputToken2.current.value = String(token1Balance)
                     setInputToken1(String(token1Balance))
                     }}> MAX </span>
                 <p>Balance: {token1Balance} </p> 
@@ -87,7 +137,7 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = ({ token1, t
         </ChangeTokens>
 
         <CurrencyWrapper>
-            <Input disabled={true} />
+            <Input disabled={true} ref={inputToken2} />
             <SelectedToken onClick={() => dispatch({type: ActionTypes.SET_CURRENCY_CARD, payload: {show: true, number: 2}})}>
                 {
                     token2 ?
@@ -106,11 +156,50 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = ({ token1, t
             <p>Balance: {token2Balance} </p> 
         </Balance>
 
+        {
+            reserves && inputToken2.current &&
+            <>
+                <PoolStats>
+                    <div>
+                        <h2> Minimum Received</h2>
+                        <h2> {(Math.round((Number(inputToken2.current.value) * ((100-settings.slippage)/100))*1000))/1000} Token </h2>
+                    </div>
+                    <div>
+                        <h2> Slippage Tolerance </h2>
+                        <h2> {settings.slippage}% </h2>
+                    </div>
+                    <div>
+                        <h2>Price Impact</h2>
+                        <h2> {(Math.round((Number(inputToken2.current.value) / reserves.reserve1)*10000))/100}%</h2>
+                    </div>
+                </PoolStats>
+                <Text margin= '0' fontSize={0.8}>Price: &nbsp; 
+                    { inputToken1 !== '' ? 
+                                (Math.round((Number(inputToken1) / Number(inputToken2.current.value))*1000))/1000 
+                                : (Math.round((reserves.reserve0 / reserves.reserve1)*1000))/1000
+                    }
+                    &nbsp; {token1} &nbsp; per &nbsp; {token2} </Text>
+            </>
+        }
+
         <Footer>
             {
-                // active ?
-                // <CardButton text={buttonText} />
-                // :
+                active ?
+                <CardButton text= { 
+                    buttonState.disabled === false && token1Allowance < Number(inputToken1) 
+                    ? 'Approve'
+                    : buttonState.text
+                
+                } disabled={buttonState.disabled} onClick={() => {
+                    if (token1Allowance < Number(inputToken1)) {
+                        // nested if to preventing calling else if token1Address does not exist
+                        if (!token1Address) return
+                        callApprove(token1Address)
+                    } else {
+                        callSwapTokens()
+                    }
+                }}  />
+                :
                 <CardButton onClick={handleConnectWallet} text='Connect wallet' />
             }
         </Footer>

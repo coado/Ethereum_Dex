@@ -48,7 +48,7 @@ const initialState: State = {
     },
     settingsCard: false,
     settings: {
-        slippage: 0.5,
+        slippage: 1,
         deadline: 20
     }
 }  
@@ -144,20 +144,21 @@ function reducer(state: State, action: Action) {
                 
             }
         case ActionTypes.EXCHANGE_CURRENCIES:
-            let cache = state.token1
-            
+            let cacheToken = state.token1
+            let cacheAddress = state.token1Address
+
             return {
                 ...state,
                 token1: state.token2,
-                token2: cache
+                token2: cacheToken,
+                token1Address: state.token2Address,
+                token2Address: cacheAddress
             }
         default: 
             return state
         }
     }
-    const useCardReducer = (): [State, React.Dispatch<Action>] => {
+    export const useCardReducer = (): [State, React.Dispatch<Action>] => {
         const [state, dispatch] = useReducer(reducer, initialState)
         return [state, dispatch]
     }
-
-    export default useCardReducer;

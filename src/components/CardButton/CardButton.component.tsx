@@ -1,7 +1,7 @@
 import { DefaultButton } from '../Buttons/Buttons.component';
 
 interface ICardButton {
-    onClick: () => void;
+    onClick?: () => void;
     text: string;
     disabled?: boolean;
     buttonWidth?: number;
