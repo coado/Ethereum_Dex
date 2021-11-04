@@ -49,7 +49,6 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
             token1Address,
             token2Address,
             pair,
-            alerts,
             settings
         },
         dispatch
@@ -60,12 +59,13 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
        
         
     const [inputToken1, setInputToken1] = useState('')
+    const [transactionHash, setTransactionHash] = useState<null | string>(null)
     const inputToken2 = useRef<HTMLInputElement>(null);
     
     useTokenData(token1, token2, dispatch)
     useGetPair(token1, token2, dispatch)
     const reserves = useReserves(pair.pairAddress, pair.exist, token1Address, library)
-    const buttonState = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance, reserves)
+    const {button: buttonState, setButtonState} = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance, reserves)
         
     useEffect(() => {
         if (inputToken2.current && reserves && pair.exist) {
@@ -78,6 +78,7 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
         context.setConnector('MetaMask')
     }
 
+
     const callApprove = async (tokenAddress: string) => {
         if (!networkId || !account) return;
         const contracts = getContractsAddresses(networkId)
@@ -85,12 +86,21 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
     }
 
     const callSwapTokens = async () => {
-        if (!networkId || !inputToken2.current || !token1Address || !token2Address || !account) return
-        const contracts = getContractsAddresses(networkId)
-        let minAmountsIn = String((Math.round((Number(inputToken2.current.value) * ((100-settings.slippage)/100))*1000))/1000)
-        let deadline = Date.now()+(settings.deadline*60*1000)
-        await swapTokens(library, contracts.Router, inputToken1, minAmountsIn, [token1Address, token2Address], account, deadline)
-    }
+        try {
+            if (!networkId || !inputToken2.current || !token1Address || !token2Address || !account) return
+            if (settings.slippage >= 100) throw Error
+            const contracts = getContractsAddresses(networkId)
+            let minAmountsIn = String((Math.round((Number(inputToken2.current.value) * ((100-settings.slippage)/100))*1000))/1000)
+            let deadline = Date.now()+(settings.deadline*60*1000)
+            setButtonState('Swapping...', true)
+            await swapTokens(library, contracts.Router, inputToken1, minAmountsIn, [token1Address, token2Address], account, deadline, setTransactionHash)
+            setTransactionHash(null)    
+            setButtonState('Submit', false) 
+        
+        } catch (error) {
+            console.error(error)
+        }
+        }
     
     return (
     <Card>
@@ -128,7 +138,7 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
                     if (!inputToken2.current) return
                     setInputToken1(String(token1Balance))
                     }}> MAX </span>
-                <p>Balance: {token1Balance} </p> 
+                <p>Balance: { (Math.round(token1Balance*100)) / 100 } </p> 
         </Balance>
 
         <ChangeTokens onClick={() => dispatch({type: ActionTypes.EXCHANGE_CURRENCIES})}>
@@ -153,7 +163,7 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
         </CurrencyWrapper>
 
         <Balance>
-            <p>Balance: {token2Balance} </p> 
+            <p>Balance: { (Math.round(token2Balance*100)) / 100 } </p> 
         </Balance>
 
         {
@@ -203,5 +213,9 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
                 <CardButton onClick={handleConnectWallet} text='Connect wallet' />
             }
         </Footer>
+        {
+            transactionHash && 
+            <Text fontSize={0.8} margin='-1rem 0 1rem 0'> Transaction Hash: <a href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}> {`${transactionHash.slice(0, 4)}...${transactionHash.slice(-4)}`} </a></Text>    
+        }
     </Card>
 )};

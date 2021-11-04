@@ -20,6 +20,7 @@ import { Card,
         ApproveWrapper,
         ApproveText,
         ApproveButtons,
+        Text,
         Footer } from '../Card/Card.component';
 
 // HOOKS
@@ -63,11 +64,11 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
 
     const [inputToken1, setInputToken1] = useState('')  
     const inputToken2 = useRef<HTMLInputElement>(null)
-    
+    const [transactionHash, setTransactionHash] = useState<null | string>(null)
     
     useTokenData(token1, token2, dispatch)
     useGetPair(token1, token2, dispatch)
-    const buttonState = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance)
+    const {button: buttonState} = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance)
     const reserves= useReserves(pair.pairAddress, pair.exist, token1Address, library)
 
     useEffect(() => {
@@ -89,35 +90,16 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
 
     const callAddLiquidity = async () => {
         try {
-            let routerAddress: string;
             if (!networkId || !token1Address || !token2Address || !inputToken2.current || !account) return
-
-            type Settings = {
-                slippage: number;
-                deadline: number;
-            }
-
-            let token1MinAmount: string = "1"
-            let token2MinAmount: string = "1"
-            let deadline = Date.now()+(20*60*1000)
-            const storageData = window.localStorage.getItem('settings');
-            
-            let settings: Settings
-            if (storageData) {
-                settings = JSON.parse(storageData)                
-                if (settings.slippage >= 100) throw Error
-                token1MinAmount = String(Number(inputToken1)-Number(inputToken1)*(settings.slippage / 100)) 
-                token2MinAmount = String(Number(inputToken2.current.value)-Number(inputToken2.current.value)*(settings.slippage / 100)) 
-                deadline = Date.now()+(settings.deadline*60*1000)
-            }
-            
-            
+            if (settings.slippage >= 100) throw Error
+            const token1MinAmount = String(Number(inputToken1)-Number(inputToken1)*(settings.slippage / 100)) 
+            const token2MinAmount = String(Number(inputToken2.current.value)-Number(inputToken2.current.value)*(settings.slippage / 100)) 
+            const deadline = Date.now()+(settings.deadline*60*1000) 
             const contracts = getContractsAddresses(networkId)
-            routerAddress = contracts.Router
 
             await addLiquidity(
                 library, 
-                routerAddress, 
+                contracts.Router, 
                 token1Address, 
                 token2Address,
                 inputToken1,
@@ -125,7 +107,8 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
                 token1MinAmount,
                 token2MinAmount,
                 account,
-                deadline
+                deadline,
+                setTransactionHash
             )
         } catch(error) {
             console.error(error)
@@ -190,7 +173,7 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
                     <span onClick={() => {
                         setInputToken1(String(token1Balance))
                     }} > MAX </span>
-                    <p>Balance: { token1Balance } </p> 
+                    <p>Balance: { (Math.round(token1Balance*100)) / 100 } </p> 
             </Balance>
 
             <AddSign>
@@ -215,19 +198,19 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
             </CurrencyWrapper>
 
             <Balance>
-                    <p>Balance: { token2Balance } </p> 
+                    <p>Balance: { (Math.round(token2Balance*100)) / 100 } </p> 
             </Balance>   
             {
                 reserves &&
                 <PoolStats>
                     <div>
                         <h2>{token1} PER {token2}</h2>
-                        <h2>{ (reserves.reserve0 / reserves.reserve1 )}</h2>
+                        <h2>{ (Math.round((reserves.reserve0 / reserves.reserve1)*1000)) / 1000}</h2>
                     </div>
 
                     <div>
                         <h2>{token2} PER {token1}</h2>
-                        <h2>{(reserves.reserve1 / reserves.reserve0)}</h2>
+                        <h2>{ (Math.round((reserves.reserve1 / reserves.reserve0)*1000)) / 1000 }</h2>
                     </div>
 
                     <div>
@@ -268,6 +251,10 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
                 <CardButton onClick={handleConnectWallet} text='Connect wallet' />
             }
         </Footer>
+        {
+            transactionHash && 
+            <Text fontSize={0.8} margin='-1rem 0 1rem 0'> Transaction Hash: <a href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}> {`${transactionHash.slice(0, 4)}...${transactionHash.slice(-4)}`} </a></Text>    
+        }
 
     </Card>
 )}

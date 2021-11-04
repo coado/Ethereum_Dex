@@ -1,5 +1,6 @@
 import * as contractHelper from './contractHelpers';
 import { Library } from 'web3-react/dist/context';
+import React from 'react';
 
 // ERC20 functions -------------------------------------------- 
 export const approve = async (library: Library, contractAddress: string, spender: string, amount: number, from: string) => {
@@ -59,7 +60,8 @@ export const swapTokens = async (
     minAmountsIn: string,
     path: string[],
     to: string,
-    deadline: number
+    deadline: number,
+    onTransactionHash: (hash: string) => void,
     ) => {
     try {
         const contract = contractHelper.getSwapTokensContract(library, routerAddress)
@@ -69,7 +71,11 @@ export const swapTokens = async (
                         path,   
                         to, 
                         deadline
-                    ).send({from: to})
+        ).send({from: to})
+        .once('transactionHash', (hash: string) => {
+            onTransactionHash(hash)
+        })
+
     } catch(error) {    
         console.error(error)
     }
@@ -85,7 +91,8 @@ export const addLiquidity = async (
     toke1MinAmount: string,
     token2MinAmount: string,
     to: string,
-    deadline: number
+    deadline: number,
+    onTransactionHash: (hash: string) => void
     ) => {
 
         try {
@@ -102,7 +109,7 @@ export const addLiquidity = async (
                 deadline
                 ).send({from: to})
                 .once('transactionHash', (hash: string) => {
-                    console.log(hash);
+                    onTransactionHash(hash)
             })
 
         } catch(error) {

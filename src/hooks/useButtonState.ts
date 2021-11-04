@@ -29,6 +29,6 @@ export const useButtonState = (
 
     }, [token1, token2, inputTokenValue1, inputTokenValue2, tokenBalance1, tokenBalance2, reserves])
 
-    return button
+    return {button, setButtonState}
 
 }
