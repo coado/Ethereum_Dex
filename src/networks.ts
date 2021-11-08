@@ -28,10 +28,7 @@ export const networksData: { [key: string]: NetworkData} = {
         "name": "Rinkeby",
         "tokens": {
             "DAI": "0xc7ad46e0b8a400bb3c915120d284aafba8fc4735",
-            "WETH":"0xc778417e063141139fce010982780140aa0cd5ab", 
-            "BUSD": "",
-            "GECKO": "",
-            "BNB":"",
+            "WETH":"0xc778417e063141139fce010982780140aa0cd5ab",
             "TOKEN1":"0x4E3b4ea45441D9834B48af4f34A48952E3A3c055",
             "TOKEN2":"0xf49A9eeb985e911f7B0822a6e6aaf07631710f76"
         },

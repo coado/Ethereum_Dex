@@ -1,6 +1,7 @@
-import styled  from "styled-components";
-import { ReactComponent as Arrow} from '../../svg/arrow.svg';
-import { ReactComponent as Settings} from '../../svg/settings.svg';
+import styled from "styled-components";
+import { ReactComponent as Arrow} from '../../../svg/arrow.svg';
+import { ReactComponent as Settings} from '../../../svg/settings.svg';
+
 
 export const Card = styled.div`
   width: 25rem;

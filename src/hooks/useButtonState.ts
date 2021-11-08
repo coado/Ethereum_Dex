@@ -8,6 +8,7 @@ export const useButtonState = (
     inputTokenValue2: string | null | undefined,
     tokenBalance1: number | null,
     tokenBalance2: number | null,
+    slippage: number,
     reserves?: Reserves | null
     ) => {
     const [button, setButton] = useState({
@@ -20,15 +21,16 @@ export const useButtonState = (
     }   
 
     useEffect(() => {               
-        if (!token1 || !token2) setButtonState('Select token', true)
+        if (slippage >= 50) setButtonState('Slippage too high!', true)
+        else if (!token1 || !token2) setButtonState('Select token', true)
         else if (reserves === null) setButtonState('Insufficient Liquidity', true)
         else if (!inputTokenValue1 || inputTokenValue1 === '0') setButtonState('Provide Value', true)
         else if (tokenBalance1 !== null && Number(inputTokenValue1) > tokenBalance1) setButtonState(`Insufficient ${token1} balance`, true)
         else if (tokenBalance2 !== null && Number(inputTokenValue2) > tokenBalance2) setButtonState(`Insufficient ${token2} balance`, true)
         else setButtonState('Submit', false)
 
-    }, [token1, token2, inputTokenValue1, inputTokenValue2, tokenBalance1, tokenBalance2, reserves])
+    }, [token1, token2, inputTokenValue1, inputTokenValue2, tokenBalance1, tokenBalance2, reserves, slippage])
 
-    return {button, setButtonState}
+    return button
 
 }

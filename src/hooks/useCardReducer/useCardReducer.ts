@@ -24,6 +24,12 @@ export interface State {
          slippage: number;
          deadline: number;
      }
+     waitingCard: {
+        show: boolean;
+        transactionConfirmed: boolean;
+        action: string;
+        transactionHash: string;
+     }
 }
 
 const initialState: State = {
@@ -50,6 +56,12 @@ const initialState: State = {
     settings: {
         slippage: 1,
         deadline: 20
+    },
+    waitingCard: {
+        show: false,
+        transactionConfirmed: false,
+        action: '',
+        transactionHash: ''
     }
 }  
 
@@ -143,6 +155,25 @@ function reducer(state: State, action: Action) {
                 }
                 
             }
+        case ActionTypes.SET_WAITING_CARD:
+            return {
+                ...state,
+                waitingCard: {
+                    show: action.payload.show,
+                    action: action.payload.action,
+                    transactionHash: action.payload.transactionHash,
+                    transactionConfirmed: action.payload.transactionConfirmed
+                }
+            }
+        case ActionTypes.SET_TRANSACTION_AS_CONFIRMED:
+            return {
+                ...state,
+                waitingCard: {
+                    ...state.waitingCard,
+                    transactionConfirmed: true
+                }
+            }
+
         case ActionTypes.EXCHANGE_CURRENCIES:
             let cacheToken = state.token1
             let cacheAddress = state.token1Address

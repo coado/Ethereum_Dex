@@ -1,12 +1,29 @@
 import * as contractHelper from './contractHelpers';
 import { Library } from 'web3-react/dist/context';
-import React from 'react';
 
 // ERC20 functions -------------------------------------------- 
-export const approve = async (library: Library, contractAddress: string, spender: string, amount: number, from: string) => {
+export const approve = async (
+    library: Library, 
+    contractAddress: string, 
+    spender: string, 
+    amount: number, 
+    from: string,
+    onTransactionHash: (hash: string, action: string) => void,
+    onReceipt: () => void
+    ) => {
     try {
         const contract = contractHelper.getErc20Contract(library, contractAddress)
-        await contract.methods.approve(spender, library.utils.toWei(amount, 'ether')).send({from})
+        await contract.methods.approve(spender, library.utils.toWei(amount, 'ether'))
+        .send({from})
+        .once('transactionHash', (hash: string) => {
+            onTransactionHash(hash, 'Approving')
+        })
+        .once('receipt', () => {
+            onReceipt()
+        })
+        .on('error', (error: string) => {
+            throw new Error(error)}
+         )
     } catch(error) {
         console.error(error);
     }
@@ -51,8 +68,9 @@ export const getReserves = async (library: Library, pairAddress: string) => {
         console.error(error);
     }
 }
-// Router Functions
 
+
+// Router Functions
 export const swapTokens = async (
     library: Library, 
     routerAddress: string,
@@ -61,7 +79,8 @@ export const swapTokens = async (
     path: string[],
     to: string,
     deadline: number,
-    onTransactionHash: (hash: string) => void,
+    onTransactionHash: (hash: string, action: string) => void,
+    onReceipt: () => void
     ) => {
     try {
         const contract = contractHelper.getSwapTokensContract(library, routerAddress)
@@ -73,8 +92,12 @@ export const swapTokens = async (
                         deadline
         ).send({from: to})
         .once('transactionHash', (hash: string) => {
-            onTransactionHash(hash)
-        })
+            onTransactionHash(hash, 'Swapping')
+        }).once('receipt', () => {
+            onReceipt()
+        }).on('error', (error: string) => {
+            throw new Error(error)}
+         )
 
     } catch(error) {    
         console.error(error)
@@ -92,7 +115,8 @@ export const addLiquidity = async (
     token2MinAmount: string,
     to: string,
     deadline: number,
-    onTransactionHash: (hash: string) => void
+    onTransactionHash: (hash: string, action: string) => void,
+    onReceipt: () => void
     ) => {
 
         try {
@@ -109,8 +133,12 @@ export const addLiquidity = async (
                 deadline
                 ).send({from: to})
                 .once('transactionHash', (hash: string) => {
-                    onTransactionHash(hash)
-            })
+                    onTransactionHash(hash, 'Adding Liquididty')
+                }).once('receipt', () => {
+                    onReceipt()
+                }).on('error', (error: string) => {
+                    throw Error(error)}
+                 )
 
         } catch(error) {
             console.error(error);

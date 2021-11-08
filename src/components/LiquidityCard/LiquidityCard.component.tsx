@@ -20,8 +20,7 @@ import { Card,
         ApproveWrapper,
         ApproveText,
         ApproveButtons,
-        Text,
-        Footer } from '../Card/Card.component';
+        Footer } from '../Cards/MainCard/MainCard.styles';
 
 // HOOKS
 import { useTokenData } from '../../hooks/useTokenData';
@@ -33,43 +32,41 @@ import { MaxUint256 } from '../../MaxUint256';
 import { getContractsAddresses } from '../../utils/networksDataHelper'
 import { approve, addLiquidity } from '../../utils/functionCallsHelper';
 // INTERFACES
-import { State } from '../../hooks/useCardReducer/useCardReducer';
-import { ActionTypes, Action } from '../../hooks/useCardReducer/Actions';
+import { ActionTypes } from '../../hooks/useCardReducer/Actions';
+import { ComponentProps } from '../../pages/PageWithCardWrapper/PageWithCardWrapper';
 
-interface LiquidityCardInterface {
-    state: State,
-    dispatch: React.Dispatch<Action>;
-}
 
-export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
+export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
     { 
         state: {
             token1, 
             token2, 
             token1Balance, 
             token2Balance, 
-            token1Allowance, 
             token1Address,
             token2Address, 
+            token1Allowance, 
             token2Allowance, 
             pair, 
             alerts,
             settings
         }, 
-        dispatch }
+        dispatch,
+        setWaitingCard,
+        setTransactionAsConfirmed
+    }
     ) => {
-
+        
     const context = useWeb3Context()
     const { active, library, account, networkId } = context
 
     const [inputToken1, setInputToken1] = useState('')  
     const inputToken2 = useRef<HTMLInputElement>(null)
-    const [transactionHash, setTransactionHash] = useState<null | string>(null)
     
     useTokenData(token1, token2, dispatch)
     useGetPair(token1, token2, dispatch)
-    const {button: buttonState} = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance)
-    const reserves= useReserves(pair.pairAddress, pair.exist, token1Address, library)
+    const buttonState = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance, settings.slippage)
+    const reserves = useReserves(pair.pairAddress, pair.exist, token1Address, library)
 
     useEffect(() => {
         if (inputToken2.current && reserves && pair.exist) {
@@ -82,20 +79,36 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
         context.setConnector('MetaMask')
     }
 
-    const callApprove = async (tokenAddress: string) => {
-        if (!networkId || !account) return;
-        const contracts = getContractsAddresses(networkId)
-        await approve(library, tokenAddress, contracts.Router, library.utils.fromWei(MaxUint256, 'ether'), account)
+    const callApprove = async (tokenAddress: string | null, event: React.MouseEvent<HTMLButtonElement>) => {
+        try {
+            if (!networkId || !account || !tokenAddress) return;
+            const contracts = getContractsAddresses(networkId)
+            await approve(
+                library, 
+                tokenAddress, 
+                contracts.Router, 
+                library.utils.fromWei(MaxUint256, 'ether'), 
+                account,
+                setWaitingCard,
+                setTransactionAsConfirmed
+                )
+
+            const target = event.target as HTMLButtonElement
+            target.disabled = true
+            
+        } catch(error) {
+            console.error(error)
+        }
     }
 
     const callAddLiquidity = async () => {
         try {
             if (!networkId || !token1Address || !token2Address || !inputToken2.current || !account) return
             if (settings.slippage >= 100) throw Error
+            const contracts = getContractsAddresses(networkId)
             const token1MinAmount = String(Number(inputToken1)-Number(inputToken1)*(settings.slippage / 100)) 
             const token2MinAmount = String(Number(inputToken2.current.value)-Number(inputToken2.current.value)*(settings.slippage / 100)) 
             const deadline = Date.now()+(settings.deadline*60*1000) 
-            const contracts = getContractsAddresses(networkId)
 
             await addLiquidity(
                 library, 
@@ -108,7 +121,8 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
                 token2MinAmount,
                 account,
                 deadline,
-                setTransactionHash
+                setWaitingCard,
+                setTransactionAsConfirmed
             )
         } catch(error) {
             console.error(error)
@@ -225,17 +239,15 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
                 <ApproveButtons>
                         <ApproveWrapper>
                             <ApproveText>Approve</ApproveText>
-                            <CardButton buttonWidth={75} disabled={token1Allowance > Number(inputToken1)} onClick={() => {
-                                if (!networkId || !token1Address) return
-                                callApprove(token1Address)
+                            <CardButton buttonWidth={75} disabled={token1Allowance > Number(inputToken1)} onClick={event => {
+                                callApprove(token1Address, event)
                             }} text={token1} />
                         </ApproveWrapper>
                             
                         <ApproveWrapper>
                             <ApproveText>Approve</ApproveText>
-                            <CardButton buttonWidth={75} disabled={ token2Allowance > Number(inputToken2.current ? inputToken2.current.value : 0) } onClick={() => {
-                                if (!networkId || !token2Address) return
-                                callApprove(token2Address)
+                            <CardButton buttonWidth={75} disabled={ token2Allowance > Number(inputToken2.current ? inputToken2.current.value : 0) } onClick={event => {
+                                callApprove(token2Address, event)
                             }} text={token2} />
                         </ApproveWrapper>
                 </ApproveButtons>
@@ -251,10 +263,6 @@ export const LiquidityCard: React.FunctionComponent<LiquidityCardInterface> = (
                 <CardButton onClick={handleConnectWallet} text='Connect wallet' />
             }
         </Footer>
-        {
-            transactionHash && 
-            <Text fontSize={0.8} margin='-1rem 0 1rem 0'> Transaction Hash: <a href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}> {`${transactionHash.slice(0, 4)}...${transactionHash.slice(-4)}`} </a></Text>    
-        }
 
     </Card>
 )}

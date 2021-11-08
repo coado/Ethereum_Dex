@@ -19,7 +19,7 @@ import { Card,
         ArrowSign,
         SettingsSign,
         Text
-    } from '../Card/Card.component';
+    } from '../Cards/MainCard/MainCard.styles';
 // HOOKS
 import { useTokenData } from '../../hooks/useTokenData';
 import { useGetPair } from '../../hooks/useGetPair';
@@ -30,15 +30,11 @@ import { getContractsAddresses } from '../../utils/networksDataHelper'
 import { approve, swapTokens } from '../../utils/functionCallsHelper';
 import { MaxUint256 } from '../../MaxUint256';
 // INTERFACES
-import { State } from '../../hooks/useCardReducer/useCardReducer';
-import { Action, ActionTypes } from '../../hooks/useCardReducer/Actions';
+import { ActionTypes } from '../../hooks/useCardReducer/Actions';
+import { ComponentProps } from '../../pages/PageWithCardWrapper/PageWithCardWrapper'
 
-interface SwapCardInterface {
-    state: State;
-    dispatch: (arg: Action) => void;
-}
 
-export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
+export const SwapCard: React.FunctionComponent<ComponentProps> = (
     {
         state: {
             token1, 
@@ -51,7 +47,9 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
             pair,
             settings
         },
-        dispatch
+        dispatch,
+        setWaitingCard,
+        setTransactionAsConfirmed
     }
      ) => {
     const context = useWeb3Context()
@@ -59,13 +57,12 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
        
         
     const [inputToken1, setInputToken1] = useState('')
-    const [transactionHash, setTransactionHash] = useState<null | string>(null)
     const inputToken2 = useRef<HTMLInputElement>(null);
     
     useTokenData(token1, token2, dispatch)
     useGetPair(token1, token2, dispatch)
     const reserves = useReserves(pair.pairAddress, pair.exist, token1Address, library)
-    const {button: buttonState, setButtonState} = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance, reserves)
+    const buttonState = useButtonState(token1, token2, inputToken1, inputToken2.current?.value, token1Balance, token2Balance, settings.slippage, reserves)
         
     useEffect(() => {
         if (inputToken2.current && reserves && pair.exist) {
@@ -78,11 +75,22 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
         context.setConnector('MetaMask')
     }
 
-
     const callApprove = async (tokenAddress: string) => {
-        if (!networkId || !account) return;
-        const contracts = getContractsAddresses(networkId)
-        await approve(library, tokenAddress, contracts.Router, library.utils.fromWei(MaxUint256, 'ether'), account)
+        try {
+            if (!networkId || !account) return;
+            const contracts = getContractsAddresses(networkId)
+            await approve(
+                library, 
+                tokenAddress, 
+                contracts.Router, 
+                library.utils.fromWei(MaxUint256, 'ether'), 
+                account,
+                setWaitingCard,
+                setTransactionAsConfirmed
+            )
+        } catch(error) {
+            console.error(error)
+        }
     }
 
     const callSwapTokens = async () => {
@@ -90,12 +98,20 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
             if (!networkId || !inputToken2.current || !token1Address || !token2Address || !account) return
             if (settings.slippage >= 100) throw Error
             const contracts = getContractsAddresses(networkId)
-            let minAmountsIn = String((Math.round((Number(inputToken2.current.value) * ((100-settings.slippage)/100))*1000))/1000)
-            let deadline = Date.now()+(settings.deadline*60*1000)
-            setButtonState('Swapping...', true)
-            await swapTokens(library, contracts.Router, inputToken1, minAmountsIn, [token1Address, token2Address], account, deadline, setTransactionHash)
-            setTransactionHash(null)    
-            setButtonState('Submit', false) 
+            const minAmountsIn = String((Math.round((Number(inputToken2.current.value) * ((100-settings.slippage)/100))*1000))/1000)
+            const deadline = Date.now()+(settings.deadline*60*1000)
+            // Calling swapTokens function
+            await swapTokens(
+                library, 
+                contracts.Router, 
+                inputToken1, 
+                minAmountsIn, 
+                [token1Address, token2Address], 
+                account, 
+                deadline,
+                setWaitingCard,
+                setTransactionAsConfirmed
+            )  
         
         } catch (error) {
             console.error(error)
@@ -213,9 +229,5 @@ export const SwapCard: React.FunctionComponent<SwapCardInterface> = (
                 <CardButton onClick={handleConnectWallet} text='Connect wallet' />
             }
         </Footer>
-        {
-            transactionHash && 
-            <Text fontSize={0.8} margin='-1rem 0 1rem 0'> Transaction Hash: <a href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}> {`${transactionHash.slice(0, 4)}...${transactionHash.slice(-4)}`} </a></Text>    
-        }
     </Card>
 )};

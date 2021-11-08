@@ -1,26 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { getAllTokens, getTokenAddress } from '../../utils/networksDataHelper'
+import React, { useRef, useState, useEffect, ChangeEvent } from 'react';
+import styled from 'styled-components';
 import { useWeb3Context  } from 'web3-react';
 
-import { Row } from './Row/Row.component';
-import { Action, ActionTypes } from '../../hooks/useCardReducer/Actions';
-import styled, { keyframes } from 'styled-components';
+import { getAllTokens, getTokenAddress } from '../../../utils/networksDataHelper'
+import { Action, ActionTypes } from '../../../hooks/useCardReducer/Actions';
 
-
+import { Container, Card, CloseSign } from '../ReusableCardStyles'; 
+import { TokenElement } from './TokenElement/TokenElement.component';
 // STYLES
 
-const Container = styled.div`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-backdrop-filter: blur(0.3rem);
-    backdrop-filter: blur(0.3rem);
-    z-index: 1000;
-    position: fixed;
-    top: 1rem;
-`
 const Header = styled.div`
     width: 100%;
     height: 30%;
@@ -35,36 +23,6 @@ const Header = styled.div`
       font-weight: 600;
       letter-spacing: 0.05rem;
     }
-`
-const show = keyframes`
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-`
-const Card = styled.div`
-  width: 26rem;
-  height: 35rem;
-  position: fixed;
-  background-color: #1b1426;
-  animation: ${show} 0.3s cubic-bezier(0.05, 0.2, 0.9, 1) forwards;
-  border-radius: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid #00e0c4;
-  transition: all 0.2s;
-`
-const CloseSign = styled.span`
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    color: #00e0c4;
-    cursor: pointer;
 `
 const Input = styled.input`
     width: 80%;
@@ -92,23 +50,48 @@ const DefaultTokensListContainer = styled.div`
     display: flex;
     align-items: center;
 `
-const DefaultTokensListElement = styled.div`
+
+const DefaultToken = styled.div`
+display: flex;
+align-items: center;
+padding: 0 1rem;
+border-radius: 1rem;
+cursor: pointer;
+transition: all 0.2s;
+
+&:hover {
+  background-color: rgba(0, 224, 196, 0.8);
+}
+
+p {
+  color: white;
+  margin-left: 0.4rem;
+}
+`
+
+const Token = styled.div`
     display: flex;
+    width: 100%;
     align-items: center;
-    padding: 0 1rem;
-    border-radius: 1rem;
+    justify-content: flex-start;
+    color: white;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease-out;
 
     &:hover {
-      background-color: rgba(0, 224, 196, 0.8);
+      background-color: rgba(0, 224, 196, 0.3);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    img {
+      margin-left: 2rem;
     }
 
     p {
-      color: white;
-      margin-left: 0.4rem;
+      margin-left: 1rem;
     }
 `
+
 const AllTokensListContainer = styled.div`
     width: 100%;
     height: 70%;
@@ -147,14 +130,17 @@ interface ISelectCurrencyCard {
 }
 
 export const SelectCurrencyCard: React.FunctionComponent<ISelectCurrencyCard> = ({ dispatch, number }) => {
+    const [tokensList, setTokensList] = useState<string[]>([])
     const context = useWeb3Context()
     const { networkId } = context
 
-    let tokens: { [key: string]: string} = {};
-
-    if (networkId) {
-        tokens = getAllTokens(networkId)
-    }    
+    let allTokens = useRef<string[] | null>(null);
+    useEffect(() => {
+        if (networkId) {
+            allTokens.current = Object.keys(getAllTokens(networkId))
+            setTokensList(allTokens.current)
+        }
+    }, [networkId])    
 
     let cardRef = useRef<HTMLDivElement>(null)
 
@@ -196,9 +182,15 @@ export const SelectCurrencyCard: React.FunctionComponent<ISelectCurrencyCard> = 
         }
     }
 
+    const filterList = (e: ChangeEvent<HTMLInputElement>) => {
+        if (!allTokens.current) return
+        const matches = allTokens.current.filter(el => el.toUpperCase().includes(e.target.value.toUpperCase()))
+        setTokensList(matches)
+    }
+
     return (
         <Container onClick={mouseClickHandling}>
-             <Card ref={cardRef}>
+             <Card width={26} height={35} ref={cardRef}>
                 <CloseSign onClick={() => dispatch({
                                         type: ActionTypes.SET_CURRENCY_CARD,
                                         payload: {
@@ -208,34 +200,21 @@ export const SelectCurrencyCard: React.FunctionComponent<ISelectCurrencyCard> = 
             }> &#10006; </CloseSign>
                 <Header>
                     <p>Select currency:</p>
-                    <Input placeholder='type name or token address' />
+                    <Input onChange={e => filterList(e)} placeholder='type name or token address' autoCorrect='off' autoComplete='off' />
                 </Header>
 
                 <DefaultTokensText> Default Tokens: </DefaultTokensText>
                 
                 <DefaultTokensListContainer> 
-                    <DefaultTokensListElement>
-                        <Icon src='../images/BUSD.png' alt='BUSD' /> 
-                        <p> BUSD  </p>
-                    </DefaultTokensListElement>
-                    <DefaultTokensListElement>
-                        <Icon src='../images/DAI.png' alt='DAI' /> 
-                        <p> DAI  </p>
-                    </DefaultTokensListElement>
-                    <DefaultTokensListElement>
-                        <Icon src='../images/GECKO.png' alt='GECKO' /> 
-                        <p> GECKO  </p>
-                    </DefaultTokensListElement>
-                    <DefaultTokensListElement>
-                        <Icon src='../images/BNB.png' alt='BNB' /> 
-                        <p> BNB  </p>
-                    </DefaultTokensListElement>
+                    {
+                        ['DAI', 'WETH'].map((el, i) => <TokenElement Component={DefaultToken} setToken={setToken} key={i} tokenName={el} ></TokenElement>)
+                    }
                 </DefaultTokensListContainer>
 
 
                     <AllTokensListContainer>
                                 {
-                                    Object.keys(tokens).map((el, i) => <Row setToken={setToken} key={i} name={el} />)
+                                    tokensList.map((el, i) => <TokenElement Component={Token} setToken={setToken} key={i} tokenName={el} />)
                                 }                        
                             
                     </AllTokensListContainer>

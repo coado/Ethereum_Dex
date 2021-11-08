@@ -1,48 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { SlippageButton } from '../Buttons/Buttons.component'; 
-import { ActionTypes, Action } from '../../hooks/useCardReducer/Actions';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { filterInputText } from '../../utils/filterInputText';
+import styled from 'styled-components';
 
-const Container = styled.div`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-backdrop-filter: blur(0.3rem);
-    backdrop-filter: blur(0.3rem);
-    z-index: 1000;
-    position: fixed;
-    top: 1rem;
-`
+import { ActionTypes, Action } from '../../../hooks/useCardReducer/Actions';
+import { filterInputText } from '../../../utils/filterInputText';
+import { useLocalStorage } from '../../../hooks/useLocalStorage';
 
-const show = keyframes`
+import { SlippageButton } from '../../Buttons/Buttons.component'; 
+import { Container, Card, CloseSign, Text } from '../ReusableCardStyles';
 
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-`
-
-const Card = styled.div`
-  width: 30rem;
-  height: 16rem;
-  position: fixed;
-  background-color: #1b1426;
-  border-radius: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  animation: ${show} 0.3s cubic-bezier(0.05, 0.2, 0.9, 1) forwards;
-  position: relative;
-  border: 1px solid #00e0c4;
-  transition: all 0.2s;
-`
 interface IWrapper {
     direction?: string;
     widthInPercent?: number;
@@ -59,27 +24,6 @@ const Wrapper = styled.div<IWrapper>`
     justify-content: ${props => props.justify};
     margin: ${props => props.margin};
     position: relative;
-`
-
-const CloseSign = styled.span`
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    color: #00e0c4;
-    cursor: pointer;
-`
-
-interface IText {
-    margin?: string;
-    fontSize?: number;
-    letterSpacing?: number;
-}
-
-const Text = styled.h1<IText>`
-    font-size: ${props => props.fontSize ? `${props.fontSize}rem` : '1rem'};
-    color: #12eba7;
-    margin: ${props => props.margin};
-    letter-spacing: ${props => `${props.letterSpacing}rem`};
 `
 
 interface IInput {
@@ -155,7 +99,7 @@ export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch 
     
     return (
     <Container onClick={mouseClickHandling} >
-        <Card ref={cardRef} >
+        <Card width={30} height={16} ref={cardRef} >
             <Text fontSize={1.5}  letterSpacing={0.3} margin='1rem 0 0 0' >SETTINGS</Text>
             <CloseSign onClick={closeHandling}> &#10006; </CloseSign>
             <Wrapper widthInPercent={100} margin='2rem 0 0 0' >

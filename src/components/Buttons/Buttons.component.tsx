@@ -1,21 +1,21 @@
-import React from 'react';
 import styled from 'styled-components';
 
 interface IBtn {
   buttonWidth?: number;
   backgroundColor?: string | null;
+  margin?: string;
 }
 
-const Button = styled.button`
+const Button = styled.button<IBtn>`
   border: none;
   cursor: pointer;
   font-family: 'Baloo 2', cursive;
+  width: ${props => props.buttonWidth || 100}%;
 `
 
-export const DefaultButton = styled(Button)<IBtn>`
+export const DefaultButton = styled(Button)`
     color: black;
     background: #12eba7;
-    width: ${props => props.buttonWidth || 100}%;
     padding: 0.8rem 0;
     opacity: 0.8;
     border-radius: 0.5rem;
@@ -23,7 +23,7 @@ export const DefaultButton = styled(Button)<IBtn>`
     margin-bottom: 2rem;
     transition: all 0.2s;
 
-    &.disabled {
+    &:disabled {
     background: #afafaf;
     opacity: 1;
     cursor: default;
@@ -34,12 +34,13 @@ export const DefaultButton = styled(Button)<IBtn>`
   }
 
 `
+
 export const ReflectButton = styled(Button)`
   font-size: 1rem;
   background: #12eba7;
   border-radius: 0.5rem;
   padding: 0.4rem 1.5rem;
-  margin: 0 1rem;
+  margin: ${props => props.margin};
   color: rgb(27, 25, 25);
   box-shadow: 0 0 5px #12eba7, 0 0 20px #12eba7, 0 0 40px #12eba7,
     0 0 1000px #12eba7;
@@ -50,9 +51,14 @@ export const ReflectButton = styled(Button)`
     box-shadow: 0 0 20px #12eba7, 0 0 65px #12eba7, 0 0 100px #12eba7,
       0 0 400px #12eba7;
   }
+
+  a {
+    text-decoration: none;
+    color: rgb(27, 25, 25);
+  }
 `
 
-export const SlippageButton = styled(Button)<IBtn>`
+export const SlippageButton = styled(Button)`
   padding: 0.2rem 0.5rem;
   border: 2px solid #12eba7;
   border-radius: 1rem;

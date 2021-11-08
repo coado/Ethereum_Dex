@@ -1,9 +1,10 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from "styled-components"
 // COMPONENTS
 import { SwapLiquidityButtons } from '../../components/SwapLiquidityButtons/SwapLiquidityButtons.component';
-import { SelectCurrencyCard } from '../../components/SelectCurrencyCard/SelectCurrencyCard.component';
-import { SettingsCard } from '../../components/SettingsCard/SettingsCard.component';
+import { SelectCurrencyCard } from '../../components/Cards/SelectCurrencyCard/SelectCurrencyCard.component';
+import { SettingsCard } from '../../components/Cards/SettingsCard/SettingsCard.component';
+import { WaitingCard } from '../../components/Cards/WaitingCard/WaitingCard.component';
 // HOOKS
 import { useCardReducer } from '../../hooks/useCardReducer/useCardReducer';
 // INTERFACES
@@ -33,9 +34,11 @@ type Settings = {
   deadline: number;
 }
 
-type ComponentProps = {
+export type ComponentProps = {
   state: State;
-  dispatch: React.Dispatch<Action>
+  dispatch: React.Dispatch<Action>;
+  setWaitingCard: (transactionHash: string, action: string) => void;
+  setTransactionAsConfirmed: () => void;
 }
 
 type Props = {
@@ -60,15 +63,37 @@ export const PageWithCardWrapper: React.FC<Props> = ({ Component }) => {
     })        
   }, [])
 
+  // Open Action Info Card
+  const setWaitingCard = (transactionHash: string, action: string) => {
+  dispatch({
+    type: ActionTypes.SET_WAITING_CARD,
+    payload: {
+        show: true,
+        action,
+        transactionConfirmed: false,
+        transactionHash
+    }
+  })
+}
+  // Setting Transaction as confirmed while action is performed
+  // changing waiting card state
+  const setTransactionAsConfirmed = () => {
+    dispatch({
+      type: ActionTypes.SET_TRANSACTION_AS_CONFIRMED,
+  })
+}
   return (
     <PageContainer>
       <SwapLiquidityButtons />
-        <Component state={state} dispatch={dispatch} />
+        <Component state={state} dispatch={dispatch} setWaitingCard={setWaitingCard} setTransactionAsConfirmed={setTransactionAsConfirmed} />
         {   
             state.settingsCard &&  <SettingsCard dispatch={dispatch} ></SettingsCard>
         }
         {
             state.currencyCard.show && state.currencyCard.number && <SelectCurrencyCard dispatch={dispatch} number={state.currencyCard.number}  />
+        }
+        {
+            state.waitingCard.show && <WaitingCard data={state.waitingCard} dispatch={dispatch} />
         }
     </PageContainer>
   )
