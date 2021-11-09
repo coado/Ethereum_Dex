@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/geckoswap/static/css/main.d50f8903.chunk.css",
+    "main.js": "/geckoswap/static/js/main.19269f14.chunk.js",
+    "main.js.map": "/geckoswap/static/js/main.19269f14.chunk.js.map",
+    "runtime-main.js": "/geckoswap/static/js/runtime-main.3222554f.js",
+    "runtime-main.js.map": "/geckoswap/static/js/runtime-main.3222554f.js.map",
+    "static/js/2.2313ccd6.chunk.js": "/geckoswap/static/js/2.2313ccd6.chunk.js",
+    "static/js/2.2313ccd6.chunk.js.map": "/geckoswap/static/js/2.2313ccd6.chunk.js.map",
+    "index.html": "/geckoswap/index.html",
+    "static/css/main.d50f8903.chunk.css.map": "/geckoswap/static/css/main.d50f8903.chunk.css.map",
+    "static/js/2.2313ccd6.chunk.js.LICENSE.txt": "/geckoswap/static/js/2.2313ccd6.chunk.js.LICENSE.txt",
+    "static/media/arrow.b20e4da2.svg": "/geckoswap/static/media/arrow.b20e4da2.svg",
+    "static/media/settings.0b120df2.svg": "/geckoswap/static/media/settings.0b120df2.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3222554f.js",
+    "static/js/2.2313ccd6.chunk.js",
+    "static/css/main.d50f8903.chunk.css",
+    "static/js/main.19269f14.chunk.js"
+  ]
+}
