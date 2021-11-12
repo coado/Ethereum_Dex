@@ -10,7 +10,8 @@ const Button = styled.button<IBtn>`
   border: none;
   cursor: pointer;
   font-family: 'Baloo 2', cursive;
-  width: ${props => props.buttonWidth || 100}%;
+  margin: ${props => props.margin};
+  width: ${props => props.buttonWidth || 20}rem;
 `
 
 export const DefaultButton = styled(Button)`
@@ -20,7 +21,6 @@ export const DefaultButton = styled(Button)`
     opacity: 0.8;
     border-radius: 0.5rem;
     letter-spacing: 0.1rem;
-    margin-bottom: 2rem;
     transition: all 0.2s;
 
     &:disabled {
@@ -40,7 +40,6 @@ export const ReflectButton = styled(Button)`
   background: #12eba7;
   border-radius: 0.5rem;
   padding: 0.4rem 1.5rem;
-  margin: ${props => props.margin};
   color: rgb(27, 25, 25);
   box-shadow: 0 0 5px #12eba7, 0 0 20px #12eba7, 0 0 40px #12eba7,
     0 0 1000px #12eba7;

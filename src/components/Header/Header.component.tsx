@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useWeb3Context  } from 'web3-react'
-import { getChain } from '../../utils/networksDataHelper'
+
+import { useWeb3Context  } from 'web3-react';
+import { getChain } from '../../utils/networksDataHelper';
+import { switchNetwork } from '../../utils/functionCallsHelper'; 
+
+import { DefaultButton } from '../Buttons/Buttons.component';
 
 const NavContainer = styled.div`
-position: absolute;
+  position: absolute;
   top: 0;
   width: 100%;
   height: 4.5rem;
@@ -44,6 +48,17 @@ const AddressContainer = styled.div`
     margin-right: 2rem;
 `
 
+const NotSupportedNetwork = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background-color: #f838386d;
+    color: #f7f1f1dc;
+    margin-right: 1rem;
+`
+
 
 export const PageHeader: React.FunctionComponent = () => {
     
@@ -70,15 +85,25 @@ export const PageHeader: React.FunctionComponent = () => {
 
     return (
     <NavContainer>
-        <NavText> {chain} </NavText>
-        <NavText> {userBalance || '...'} ETH</NavText>
-        <AddressContainer>
-            {
-            account ?
-            account.slice(0,4) + '...' + account.slice(-4)
+        {
+            networkId === 4 ?
+            <>
+                <NavText> {chain} </NavText>
+                <NavText> {userBalance || '...'} ETH</NavText>
+                <AddressContainer>
+                    {
+                    account ?
+                    account.slice(0,4) + '...' + account.slice(-4)
+                    :
+                    '...'
+                    }
+                </AddressContainer>
+            </>
             :
-            '...'
-            }
-        </AddressContainer>
+            
+                <DefaultButton onClick={switchNetwork} margin='0 1rem 0 0' buttonWidth={10}> Change Network </DefaultButton>
+            
+        }
+        
     </NavContainer>
 )};

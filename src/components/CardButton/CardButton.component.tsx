@@ -5,8 +5,9 @@ interface ICardButton {
     text: string;
     disabled?: boolean;
     buttonWidth?: number;
+    margin?: string;
 }
 
-export const CardButton: React.FunctionComponent<ICardButton> = ({ onClick, text, disabled, buttonWidth }) => (
-    <DefaultButton buttonWidth={buttonWidth} disabled={disabled} onClick={onClick}> {text.toUpperCase()} </DefaultButton>
+export const CardButton: React.FunctionComponent<ICardButton> = ({ onClick, text, disabled, buttonWidth, margin }) => (
+    <DefaultButton margin={margin} buttonWidth={buttonWidth} disabled={disabled} onClick={onClick}> {text.toUpperCase()} </DefaultButton>
 );

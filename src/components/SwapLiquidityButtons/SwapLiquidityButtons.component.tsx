@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 
 export const SwapLiquidityButtons: React.FunctionComponent = () => (
     <Wrapper> 
-        <Link to='/'> <ReflectButton buttonWidth={80} margin='0 1rem'>SWAP</ReflectButton> </Link>
-        <Link to='/liquidity'> <ReflectButton buttonWidth={80} margin='0 1rem'>LIQUIDITY</ReflectButton> </Link>
+        <Link to='/'> <ReflectButton buttonWidth={7} margin='0 1rem'>SWAP</ReflectButton> </Link>
+        <Link to='/liquidity'> <ReflectButton buttonWidth={7} margin='0 1rem'>LIQUIDITY</ReflectButton> </Link>
     </Wrapper>
 )

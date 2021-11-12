@@ -144,3 +144,14 @@ export const addLiquidity = async (
             console.error(error);
         }
 }
+
+// Metamask functionss
+
+export const switchNetwork = async () => {
+    let { ethereum } = (window as any)
+    // changing metamask network to rinkeby
+    await ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x4' }],
+    });
+}

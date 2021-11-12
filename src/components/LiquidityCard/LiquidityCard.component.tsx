@@ -239,14 +239,14 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
                 <ApproveButtons>
                         <ApproveWrapper>
                             <ApproveText>Approve</ApproveText>
-                            <CardButton buttonWidth={75} disabled={token1Allowance > Number(inputToken1)} onClick={event => {
+                            <CardButton margin='0 0 1rem 0' buttonWidth={7.5} disabled={token1Allowance > Number(inputToken1)} onClick={event => {
                                 callApprove(token1Address, event)
                             }} text={token1} />
                         </ApproveWrapper>
                             
                         <ApproveWrapper>
                             <ApproveText>Approve</ApproveText>
-                            <CardButton buttonWidth={75} disabled={ token2Allowance > Number(inputToken2.current ? inputToken2.current.value : 0) } onClick={event => {
+                            <CardButton margin='0 0 1rem 0' buttonWidth={7.5} disabled={ token2Allowance > Number(inputToken2.current ? inputToken2.current.value : 0) } onClick={event => {
                                 callApprove(token2Address, event)
                             }} text={token2} />
                         </ApproveWrapper>
@@ -258,9 +258,9 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
         <Footer>
             {
                 active ?
-                <CardButton onClick={callAddLiquidity} text={buttonState.text} disabled={buttonState.disabled}  />
+                <CardButton margin='0 0 2rem 0' onClick={callAddLiquidity} text={buttonState.text} disabled={buttonState.disabled}  />
                 :
-                <CardButton onClick={handleConnectWallet} text='Connect wallet' />
+                <CardButton margin='0 0 2rem 0' onClick={handleConnectWallet} text='Connect wallet' />
             }
         </Footer>
 

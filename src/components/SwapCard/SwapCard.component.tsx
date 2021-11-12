@@ -75,9 +75,9 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
         context.setConnector('MetaMask')
     }
 
-    const callApprove = async (tokenAddress: string) => {
+    const callApprove = async (tokenAddress: string | null) => {
         try {
-            if (!networkId || !account) return;
+            if (!networkId || !account || !tokenAddress) return;
             const contracts = getContractsAddresses(networkId)
             await approve(
                 library, 
@@ -211,7 +211,7 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
         <Footer>
             {
                 active ?
-                <CardButton text= { 
+                <CardButton margin='0 0 2rem 0' text= { 
                     buttonState.disabled === false && token1Allowance < Number(inputToken1) 
                     ? 'Approve'
                     : buttonState.text
@@ -226,7 +226,7 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
                     }
                 }}  />
                 :
-                <CardButton onClick={handleConnectWallet} text='Connect wallet' />
+                <CardButton margin='0 0 2rem 0' onClick={handleConnectWallet} text='Connect wallet' />
             }
         </Footer>
     </Card>

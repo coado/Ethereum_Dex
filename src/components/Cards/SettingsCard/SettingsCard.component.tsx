@@ -106,9 +106,9 @@ export const SettingsCard: React.FunctionComponent<ISettingsCard> = ({ dispatch 
                 <Wrapper direction='column' widthInPercent={70} justify='center' margin='0 0 0 2rem'>
                     <Text margin='0 0 1.5rem 0'>Slippage Tolerance</Text>
                     <Wrapper widthInPercent={100} justify='space-around'>
-                        <SlippageButton onClick={() => setSlippage(0.1)} backgroundColor={slippage === 0.1 ? '#12eba7' : null} >0.1%</SlippageButton>
-                        <SlippageButton onClick={() => setSlippage(0.5)} backgroundColor={slippage === 0.5 ? '#12eba7' : null} >0.5%</SlippageButton>
-                        <SlippageButton onClick={() => setSlippage(1)} backgroundColor={slippage === 1 ? '#12eba7' : null} >1.00%</SlippageButton>
+                        <SlippageButton buttonWidth={4} onClick={() => setSlippage(0.1)} backgroundColor={slippage === 0.1 ? '#12eba7' : null} >0.1%</SlippageButton>
+                        <SlippageButton buttonWidth={4} onClick={() => setSlippage(0.5)} backgroundColor={slippage === 0.5 ? '#12eba7' : null} >0.5%</SlippageButton>
+                        <SlippageButton buttonWidth={4} onClick={() => setSlippage(1)} backgroundColor={slippage === 1 ? '#12eba7' : null} >1.00%</SlippageButton>
 
                         <Wrapper>
                             <Input borderColor={slippage >= 50 ? '#F22323' : null} value={slippage} onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => filterInputText(e)} maxLength={4} placeholder={String(slippage)} onChange={e => setSlippage(Number(e.target.value))} autoComplete='off' autoCorrect='off' ></Input>
