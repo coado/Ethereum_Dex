@@ -95,7 +95,7 @@ export const WaitingCard: React.FC<IWaitingCard> = ({ data, dispatch }) => {
                 <Text margin='1rem 0 0 0' fontSize={1.3}>Transaction Hash:</Text>
                 <Text fontSize={0.8}> {data.transactionHash} </Text>
 
-                <ReflectButton buttonWidth={40} margin='2.5rem 0' ><a rel="noreferrer" target='_blank' href={`https://rinkeby.etherscan.io/tx/${data.transactionHash}`}>View on etherscan</a></ReflectButton>
+                <ReflectButton buttonWidth={15} margin='2.5rem 0' ><a rel="noreferrer" target='_blank' href={`https://rinkeby.etherscan.io/tx/${data.transactionHash}`}>View on etherscan</a></ReflectButton>
             </Card>
         </Container>
     )

@@ -149,6 +149,7 @@ export const addLiquidity = async (
 
 export const switchNetwork = async () => {
     let { ethereum } = (window as any)
+    if (!ethereum) return
     // changing metamask network to rinkeby
     await ethereum.request({
         method: 'wallet_switchEthereumChain',

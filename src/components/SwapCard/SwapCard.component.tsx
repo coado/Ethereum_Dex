@@ -75,6 +75,12 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
         context.setConnector('MetaMask')
     }
 
+    const clearInputs = () => {
+        if (!inputToken2.current) return
+            setInputToken1('')
+            inputToken2.current.value = ''
+    }
+
     const callApprove = async (tokenAddress: string | null) => {
         try {
             if (!networkId || !account || !tokenAddress) return;
@@ -88,6 +94,7 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
                 setWaitingCard,
                 setTransactionAsConfirmed
             )
+            clearInputs()
         } catch(error) {
             console.error(error)
         }
@@ -112,6 +119,7 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
                 setWaitingCard,
                 setTransactionAsConfirmed
             )  
+            clearInputs()
         
         } catch (error) {
             console.error(error)

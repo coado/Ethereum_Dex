@@ -79,6 +79,12 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
         context.setConnector('MetaMask')
     }
 
+    const clearInputs = () => {
+        if (!inputToken2.current) return
+            setInputToken1('')
+            inputToken2.current.value = ''
+    }
+
     const callApprove = async (tokenAddress: string | null, event: React.MouseEvent<HTMLButtonElement>) => {
         try {
             if (!networkId || !account || !tokenAddress) return;
@@ -95,6 +101,7 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
 
             const target = event.target as HTMLButtonElement
             target.disabled = true
+            clearInputs()
             
         } catch(error) {
             console.error(error)
@@ -124,12 +131,12 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
                 setWaitingCard,
                 setTransactionAsConfirmed
             )
+            clearInputs()
         } catch(error) {
             console.error(error)
         }
         
     }
-
 
     return (
     <Card  >
