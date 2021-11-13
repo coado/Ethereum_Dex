@@ -200,7 +200,7 @@ export const SelectCurrencyCard: React.FunctionComponent<ISelectCurrencyCard> = 
             }> &#10006; </CloseSign>
                 <Header>
                     <p>Select currency:</p>
-                    <Input onChange={e => filterList(e)} placeholder='type name or token address' autoCorrect='off' autoComplete='off' />
+                    <Input onChange={e => filterList(e)} placeholder='type token name' autoCorrect='off' autoComplete='off' />
                 </Header>
 
                 <DefaultTokensText> Default Tokens: </DefaultTokensText>
