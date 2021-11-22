@@ -191,7 +191,7 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
         </Balance>
 
         {
-            reserves && inputToken2.current &&
+            reserves && inputToken2.current && pair.exist &&
             <>
                 <PoolStats>
                     <div>

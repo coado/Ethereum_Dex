@@ -19,6 +19,8 @@ export const useGetPair = (
             const tokens = getAllTokens(networkId)
             const contracts = getContractsAddresses(networkId)
             const address = await getPairAddress(library, contracts.Factory, tokens[token1], tokens[token2])
+            console.log(address);
+            
             return address 
         } catch(error) {
             console.log(error);
