@@ -30,6 +30,7 @@ export interface State {
         action: string;
         transactionHash: string;
      }
+     errorMessage: string | null
 }
 
 const initialState: State = {
@@ -62,7 +63,8 @@ const initialState: State = {
         transactionConfirmed: false,
         action: '',
         transactionHash: ''
-    }
+    },
+    errorMessage: null
 }  
 
 
@@ -173,7 +175,13 @@ function reducer(state: State, action: Action) {
                     transactionConfirmed: true
                 }
             }
-
+        
+        case ActionTypes.SET_ERROR:
+            return {
+                ...state,
+                errorMessage: action.payload
+            }
+        
         case ActionTypes.EXCHANGE_CURRENCIES:
             let cacheToken = state.token1
             let cacheAddress = state.token1Address

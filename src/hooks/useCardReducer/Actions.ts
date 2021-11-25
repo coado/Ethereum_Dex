@@ -9,6 +9,7 @@ export enum ActionTypes {
     SET_SETTINGS,
     SET_WAITING_CARD,
     SET_TRANSACTION_AS_CONFIRMED,
+    SET_ERROR,
     EXCHANGE_CURRENCIES,
     TOKEN1_LIQUIDITY_FUNCTION
 }
@@ -65,6 +66,11 @@ export interface SetWaitingCard {
     }
 }
 
+export interface SetError {
+    type: ActionTypes.SET_ERROR;
+    payload: string | null;
+}
+
 export interface SetTransactionAsConfirmed {
     type: ActionTypes.SET_TRANSACTION_AS_CONFIRMED;
 }
@@ -84,4 +90,4 @@ export interface ExchangeCurrencies {
     type: ActionTypes.EXCHANGE_CURRENCIES;
 }
 
-export type Action = SelectToken1 | SelectToken2 | SetCurrencyCard |  SetTokensData | SetPairAddress | ExchangeCurrencies | SetSettingsCard | SetSettings | SetWaitingCard | SetTransactionAsConfirmed;
+export type Action = SelectToken1 | SelectToken2 | SetCurrencyCard |  SetTokensData | SetPairAddress | ExchangeCurrencies | SetSettingsCard | SetError | SetSettings | SetWaitingCard | SetTransactionAsConfirmed;

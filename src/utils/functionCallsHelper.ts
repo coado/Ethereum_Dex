@@ -11,7 +11,7 @@ export const approve = async (
     onTransactionHash: (hash: string, action: string) => void,
     onReceipt: () => void
     ) => {
-    try {
+        
         const contract = contractHelper.getErc20Contract(library, contractAddress)
         await contract.methods.approve(spender, library.utils.toWei(amount, 'ether'))
         .send({from})
@@ -24,9 +24,7 @@ export const approve = async (
         .on('error', (error: string) => {
             throw new Error(error)}
          )
-    } catch(error) {
-        console.error(error);
-    }
+   
 }
 
 export const getTokenData = async (library: Library, contractAddress: string, address: string, spender: string) => {
@@ -82,7 +80,6 @@ export const swapTokens = async (
     onTransactionHash: (hash: string, action: string) => void,
     onReceipt: () => void
     ) => {
-    try {
         const contract = contractHelper.getSwapTokensContract(library, routerAddress)
         await contract.methods.swapExactTokensForTokens(
                         library.utils.toWei(amountsIn, 'ether'),
@@ -99,9 +96,7 @@ export const swapTokens = async (
             throw new Error(error)}
          )
 
-    } catch(error) {    
-        console.error(error)
-    }
+    
 }
 
 export const addLiquidity = async (
@@ -118,8 +113,6 @@ export const addLiquidity = async (
     onTransactionHash: (hash: string, action: string) => void,
     onReceipt: () => void
     ) => {
-
-        try {
             const addLiquidityContract = contractHelper.getAddLiquidityContract(library, routerAddress)
 
             await addLiquidityContract.methods.addLiquidity(
@@ -140,9 +133,7 @@ export const addLiquidity = async (
                     throw Error(error)}
                  )
 
-        } catch(error) {
-            console.error(error);
-        }
+      
 }
 
 // Metamask functionss

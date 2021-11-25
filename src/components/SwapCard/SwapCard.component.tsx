@@ -33,7 +33,6 @@ import { MaxUint256 } from '../../MaxUint256';
 import { ActionTypes } from '../../hooks/useCardReducer/Actions';
 import { ComponentProps } from '../../pages/PageWithCardWrapper/PageWithCardWrapper'
 
-
 export const SwapCard: React.FunctionComponent<ComponentProps> = (
     {
         state: {
@@ -81,6 +80,20 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
             inputToken2.current.value = ''
     }
 
+    const setErrorLabel = (message: string | null) => {
+        dispatch({
+            type: ActionTypes.SET_ERROR,
+            payload: message
+        })
+        setTimeout(() => {
+            dispatch({
+                type: ActionTypes.SET_ERROR,
+                payload: null
+            })
+        }, 5000)
+    }   
+    
+
     const callApprove = async (tokenAddress: string | null) => {
         try {
             if (!networkId || !account || !tokenAddress) return;
@@ -96,7 +109,9 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
             )
             clearInputs()
         } catch(error) {
-            console.error(error)
+            setErrorLabel('Something went wrong with approving tokens. Please try again!')
+            
+        
         }
     }
 
@@ -122,7 +137,7 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
             clearInputs()
         
         } catch (error) {
-            console.error(error)
+            setErrorLabel('Something went wrong with swaping tokens. Please try again!');
         }
         }
     

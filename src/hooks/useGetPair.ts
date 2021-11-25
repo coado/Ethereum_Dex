@@ -18,10 +18,9 @@ export const useGetPair = (
             if (!networkId || !token1 || !token2) return;
             const tokens = getAllTokens(networkId)
             const contracts = getContractsAddresses(networkId)
-            const address = await getPairAddress(library, contracts.Factory, tokens[token1], tokens[token2])
-            console.log(address);
-            
-            return address 
+            // returning address
+            return await getPairAddress(library, contracts.Factory, tokens[token1], tokens[token2])
+                         
         } catch(error) {
             console.log(error);
             return null
@@ -31,7 +30,7 @@ export const useGetPair = (
     useEffect(() => {
         if (token1 && token2) {
             getPair().then(address => {
-                if (address === "0x0000000000000000000000000000000000000000") {
+                if (address === '0x0000000000000000000000000000000000000000') {
                     dispatch({
                         type: ActionTypes.SET_PAIR_ADDRESS,
                             payload: {

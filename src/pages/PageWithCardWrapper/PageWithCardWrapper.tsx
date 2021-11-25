@@ -5,6 +5,7 @@ import { SwapLiquidityButtons } from '../../components/SwapLiquidityButtons/Swap
 import { SelectCurrencyCard } from '../../components/Cards/SelectCurrencyCard/SelectCurrencyCard.component';
 import { SettingsCard } from '../../components/Cards/SettingsCard/SettingsCard.component';
 import { WaitingCard } from '../../components/Cards/WaitingCard/WaitingCard.component';
+import { ErrorLabel } from '../../components/ErrorLabel/ErrorLabel.component';
 // HOOKS
 import { useCardReducer } from '../../hooks/useCardReducer/useCardReducer';
 // INTERFACES
@@ -94,6 +95,9 @@ export const PageWithCardWrapper: React.FC<Props> = ({ Component }) => {
         }
         {
             state.waitingCard.show && <WaitingCard data={state.waitingCard} dispatch={dispatch} />
+        }
+        {
+          state.errorMessage && <ErrorLabel message={state.errorMessage} />
         }
     </PageContainer>
   )

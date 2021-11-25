@@ -79,6 +79,19 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
         context.setConnector('MetaMask')
     }
 
+    const setErrorLabel = (message: string | null) => {
+        dispatch({
+            type: ActionTypes.SET_ERROR,
+            payload: message
+        })
+        setTimeout(() => {
+            dispatch({
+                type: ActionTypes.SET_ERROR,
+                payload: null
+            })
+        }, 5000)
+    }  
+
     const clearInputs = () => {
         if (!inputToken2.current) return
             setInputToken1('')
@@ -104,7 +117,7 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
             clearInputs()
             
         } catch(error) {
-            console.error(error)
+            setErrorLabel('Something went wrong with approving tokens. Please try again!')
         }
     }
 
@@ -133,7 +146,7 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
             )
             clearInputs()
         } catch(error) {
-            console.error(error)
+            setErrorLabel('Something went wrong with aading liquidity. Please try again!')
         }
         
     }
