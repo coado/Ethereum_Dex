@@ -1,4 +1,14 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+
+const showAnimation = keyframes`
+    0% {
+        transform: translateX(-20rem)
+    } 100% {
+        transform: translateX(0rem)
+    }
+`
+
 
 const Container = styled.div`
     width: 20rem;
@@ -9,7 +19,7 @@ const Container = styled.div`
     border-radius: .5rem;
     border: 1px solid #12eba7;
     box-shadow: 1px 1px 57px #12eba7;
-
+    animation: ${showAnimation} .2s linear;
     display: flex;
 
     .left {
@@ -38,7 +48,6 @@ const Container = styled.div`
     }
 
 `
-
 
 
 interface IErrorLabel {

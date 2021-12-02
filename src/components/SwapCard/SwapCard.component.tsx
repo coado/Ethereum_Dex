@@ -110,8 +110,8 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
             clearInputs()
         } catch(error) {
             setErrorLabel('Something went wrong with approving tokens. Please try again!')
-            
-        
+            clearInputs()
+
         }
     }
 
@@ -138,6 +138,7 @@ export const SwapCard: React.FunctionComponent<ComponentProps> = (
         
         } catch (error) {
             setErrorLabel('Something went wrong with swaping tokens. Please try again!');
+            clearInputs()
         }
         }
     

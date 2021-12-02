@@ -1,3 +1,4 @@
+/* eslint-disable no-throw-literal */
 import * as contractHelper from './contractHelpers';
 import { Library } from 'web3-react/dist/context';
 
@@ -21,8 +22,8 @@ export const approve = async (
         .once('receipt', () => {
             onReceipt()
         })
-        .on('error', (error: string) => {
-            throw new Error(error)}
+        .on('error', () => {
+            throw ''}
          )
    
 }
@@ -92,8 +93,8 @@ export const swapTokens = async (
             onTransactionHash(hash, 'Swapping')
         }).once('receipt', () => {
             onReceipt()
-        }).on('error', (error: string) => {
-            throw new Error(error)}
+        }).on('error', () => {
+            throw '' }
          )
 
     
@@ -129,8 +130,8 @@ export const addLiquidity = async (
                     onTransactionHash(hash, 'Adding Liquididty')
                 }).once('receipt', () => {
                     onReceipt()
-                }).on('error', (error: string) => {
-                    throw Error(error)}
+                }).on('error', () => {
+                    throw ''}
                  )
 
       

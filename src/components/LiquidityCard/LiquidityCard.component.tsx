@@ -118,6 +118,7 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
             
         } catch(error) {
             setErrorLabel('Something went wrong with approving tokens. Please try again!')
+            clearInputs()
         }
     }
 
@@ -147,6 +148,7 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
             clearInputs()
         } catch(error) {
             setErrorLabel('Something went wrong with aading liquidity. Please try again!')
+            clearInputs()
         }
         
     }
