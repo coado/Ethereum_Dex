@@ -145,11 +145,10 @@ export const LiquidityCard: React.FunctionComponent<ComponentProps> = (
                 setWaitingCard,
                 setTransactionAsConfirmed
             )
-            clearInputs()
         } catch(error) {
-            setErrorLabel('Something went wrong with aading liquidity. Please try again!')
-            clearInputs()
+            setErrorLabel('Something went wrong with adding liquidity. Please try again!')
         }
+        clearInputs()
         
     }
 

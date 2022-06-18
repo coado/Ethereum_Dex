@@ -4,15 +4,14 @@ import { ReactComponent as Settings} from '../../../svg/settings.svg';
 
 
 export const Card = styled.div`
-  width: 25rem;
-  // height: 32rem;
+  max-width: 25rem;
+  margin: 1rem;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 1rem;
   transition: all 0.5s;
 `
 
@@ -24,7 +23,7 @@ export const CardHeader = styled.div`
     margin-top: 1rem;
 
     h1 {
-      font-size: 1.5rem;
+      font-size: clamp(1rem, 5vw, 1.5rem);
       letter-spacing: 0.2rem;
       color: #12eba7;
       margin-left: 4rem;

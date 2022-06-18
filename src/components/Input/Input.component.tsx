@@ -18,7 +18,7 @@ const InputContainer = styled.div`
 const InputValue = styled.input`
         width: 80%;
         border-radius: .5rem;
-        padding: 1.4rem 1rem;
+        padding: clamp(.5rem, 3vw, 1.4rem) 1rem;
         background-color: transparent;
         border: none;
         color: white;

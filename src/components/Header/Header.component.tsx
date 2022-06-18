@@ -30,7 +30,7 @@ const NavContainer = styled.div`
 `
 
 const NavText = styled.h1`
-    font-size: 1.4rem;
+    font-size: clamp(.7rem, 3vw, 1.4rem);
     margin-right: 1rem;
     color: white;
 `
@@ -39,13 +39,13 @@ const AddressContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 8rem;
-    height: 2rem;
+    padding: .3rem .8rem;
     border-radius: 1rem;
     background-color: transparent;
     border: 3px solid #1affcd;
     color: #15f0c0;
     margin-right: 2rem;
+    font-size: clamp(.8rem, 3vw, 1.2rem);
 `
 
 const NotSupportedNetwork = styled.div`
