@@ -32,14 +32,14 @@ In order to check out how this app works, you will need some DAI and WETH tokens
 
 ## How the pool works
 
-The pool is simply a contract that contains a pair of tokens (let's assume that the tokens are DAI and WETH) and manages the price of these tokens. The price depends on holding tokens ratio, for instance:
+The pool is simply a contract that contains a pair of tokens (let's assume DAI and WETH) and manages the price of these tokens. The price depends on the holding tokens ratio, for instance:
 
-let's assume that there is 100 DAI and 1 WETH in the pool and you want to swap your 2 WETH for DAI.
+There is 100 DAI and 1 WETH in the pool. The user wants to swap 2 WETH for DAI.
 
 x - amount of WETH in the pool
 y - amount of DAI in the pool
-dx - amount of WETH you provide
-dy - amount of DAI you receive
+dx - amount of WETH user provides
+dy - amount of DAI user receives
 
 xy = k
 
@@ -53,6 +53,6 @@ dy = (y*dx) / (x+dx)
 
 dy = (y*dx*0.997) / (x+dx*0.997)
 
-Users can add liquidity to the pool without changing the price of tokens.
+Users can add liquidity to the pool without changing the price of tokens. More liquidity = less price impact.
 
 ![image](https://user-images.githubusercontent.com/64146291/174471742-0984448f-0a82-4ebc-856f-169a04389893.png)
