@@ -17,7 +17,7 @@ In order to check out how this app works, you will need some DAI and WETH tokens
 
 4. Unroll the mint tab and provide your wallet address and amount that you wish to mint. Click "write" and approve transaction on your wallet.
 
-![image](https://user-images.githubusercontent.com/64146291/174458176-da6b13bd-75aa-4831-bdd2-56ff9d5fd940.png)
+![image](https://user-images.githubusercontent.com/64146291/174470360-d78c01f1-aae4-4f19-ae7b-d7b6c81e2e97.png)
 
 ## How to get WETH
 
