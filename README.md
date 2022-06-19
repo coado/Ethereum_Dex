@@ -27,3 +27,7 @@ In order to check out how this app works, you will need some DAI and WETH tokens
 4. Unroll the deposit tab and provide amount of ETH you want to deposit (you have to have eth on rinkeby network). Click "write" and approve transaction on your wallet.
 
 ![image](https://user-images.githubusercontent.com/64146291/174458620-4e9e29a2-8585-4f29-af5f-a7fae7c8ccda.png)
+
+
+
+![image](https://user-images.githubusercontent.com/64146291/174471742-0984448f-0a82-4ebc-856f-169a04389893.png)
