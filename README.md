@@ -37,8 +37,11 @@ The pool is simply a contract that contains a pair of tokens (let's assume DAI a
 There is 100 DAI and 1 WETH in the pool. The user wants to swap 2 WETH for DAI.
 
 x - amount of WETH in the pool
+
 y - amount of DAI in the pool
+
 dx - amount of WETH user provides
+
 dy - amount of DAI user receives
 
 xy = k
@@ -48,6 +51,7 @@ xy = k
 (x+dx)(y-dy) = k
 
 dy = (y*dx) / (x+dx)
+dy = 100*2 / (1+2) = `66.67 DAI`
 
 *there is a trading fee 0.3%*
 
