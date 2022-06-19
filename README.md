@@ -32,7 +32,7 @@ In order to check out how this app works, you will need some DAI and WETH tokens
 
 ## How the pool works
 
-The pool is simply a contract that contains a pair of tokens (let's assume that the tokens are DAI and WETH) and manages the price of these tokens. The price depends on ratio of holding tokens, for instance:
+The pool is simply a contract that contains a pair of tokens (let's assume that the tokens are DAI and WETH) and manages the price of these tokens. The price depends on holding tokens ratio, for instance:
 
 let's assume that there is 100 DAI and 1 WETH in the pool and you want to swap your 2 WETH for DAI.
 
