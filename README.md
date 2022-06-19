@@ -1,6 +1,6 @@
 # Check it out here: https://priceless-franklin-5bfbea.netlify.app/
 
-This app is simply fork of Uniswap for learning purposes. All contracts were forked and deployed on the Rinkeby test network. The front-end was building from scratch. 
+This app is simply fork of Uniswap for learning purposes. All contracts were forked and deployed on the `Rinkeby` test network. The front-end was building from scratch. 
 
 In order to check out how this app works, you will need some DAI and WETH tokens.
 
