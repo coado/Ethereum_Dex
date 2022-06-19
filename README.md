@@ -49,7 +49,7 @@ xy = k
 
 dy = (y*dx) / (x+dx)
 
-+ there is a trading fee 0.3%
+*there is a trading fee 0.3%*
 
 dy = (y*dx*0.997) / (x+dx*0.997)
 
