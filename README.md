@@ -60,3 +60,8 @@ dy = (y*dx*0.997) / (x+dx*0.997)
 Users can add liquidity to the pool without changing the price of tokens. More liquidity = less price impact.
 
 ![image](https://user-images.githubusercontent.com/64146291/174471742-0984448f-0a82-4ebc-856f-169a04389893.png)
+
+
+Nodejs Badge
+
+
