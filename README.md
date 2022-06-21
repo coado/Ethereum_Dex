@@ -1,6 +1,7 @@
 # Check it out here: https://priceless-franklin-5bfbea.netlify.app/
 
-![typescript](https://user-images.githubusercontent.com/64146291/174749545-8a484512-79a7-4433-94e8-604375115f66.png)
+![typescript (1)](https://user-images.githubusercontent.com/64146291/174749699-dd91c072-08e4-4c9f-8ade-3f689fd7f6eb.png)
+
 
 
 
