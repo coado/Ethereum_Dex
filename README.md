@@ -1,8 +1,7 @@
-# Check it out here: https://priceless-franklin-5bfbea.netlify.app/
-
-![typescript (1)](https://user-images.githubusercontent.com/64146291/174749699-dd91c072-08e4-4c9f-8ade-3f689fd7f6eb.png)
+## Check it out here: https://priceless-franklin-5bfbea.netlify.app/
 
 
+![image](https://user-images.githubusercontent.com/64146291/174836895-9d86a2fd-0f87-4364-ad4a-f184c21ddf99.png)
 
 
 This app is simply fork of Uniswap for learning purposes. All contracts were forked and deployed on the `Rinkeby` test network. The front-end was building from scratch. 
