@@ -26,6 +26,7 @@ background-image: linear-gradient(
 display: flex;
 flex-direction: column;
 align-items: center;
+justify-content: center;
 font-family: 'Baloo 2', cursive;
 overflow: hidden;
 `

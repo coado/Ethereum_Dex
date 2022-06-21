@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { useWeb3Context  } from 'web3-react'
+import { useWeb3Context } from 'web3-react'
 import { switchNetwork } from './utils/functionCallsHelper'
 
 import { PageHeader } from './components/Header/Header.component';
