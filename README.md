@@ -1,6 +1,10 @@
-# Check it out here: https://priceless-franklin-5bfbea.netlify.app/
+## Check it out here: https://priceless-franklin-5bfbea.netlify.app/
 
-This app is simply fork of Uniswap for learning purposes. All contracts were forked and deployed on the Rinkeby test network. The front-end was building from scratch. 
+
+![image](https://user-images.githubusercontent.com/64146291/174836895-9d86a2fd-0f87-4364-ad4a-f184c21ddf99.png)
+
+
+This app is simply fork of Uniswap for learning purposes. All contracts were forked and deployed on the `Rinkeby` test network. The front-end was building from scratch. 
 
 In order to check out how this app works, you will need some DAI and WETH tokens.
 
@@ -17,7 +21,7 @@ In order to check out how this app works, you will need some DAI and WETH tokens
 
 4. Unroll the mint tab and provide your wallet address and amount that you wish to mint. Click "write" and approve transaction on your wallet.
 
-![image](https://user-images.githubusercontent.com/64146291/174458176-da6b13bd-75aa-4831-bdd2-56ff9d5fd940.png)
+![image](https://user-images.githubusercontent.com/64146291/174470360-d78c01f1-aae4-4f19-ae7b-d7b6c81e2e97.png)
 
 ## How to get WETH
 
@@ -27,3 +31,41 @@ In order to check out how this app works, you will need some DAI and WETH tokens
 4. Unroll the deposit tab and provide amount of ETH you want to deposit (you have to have eth on rinkeby network). Click "write" and approve transaction on your wallet.
 
 ![image](https://user-images.githubusercontent.com/64146291/174458620-4e9e29a2-8585-4f29-af5f-a7fae7c8ccda.png)
+
+
+
+## How the pool works
+
+The pool is simply a contract that contains a pair of tokens (let's assume DAI and WETH) and manages the price of these tokens. The price depends on the holding tokens ratio, for instance:
+
+There is 100 DAI and 1 WETH in the pool. The user wants to swap 2 WETH for DAI.
+
+x - amount of WETH in the pool
+
+y - amount of DAI in the pool
+
+dx - amount of WETH user provides
+
+dy - amount of DAI user receives
+
+xy = k
+
+*K is constant value, it cannot be changed during swaping*
+
+(x+dx)(y-dy) = k
+
+dy = (y*dx) / (x+dx)
+dy = 100*2 / (1+2) = `66.67 DAI`
+
+*there is a trading fee 0.3%*
+
+dy = (y*dx*0.997) / (x+dx*0.997)
+
+Users can add liquidity to the pool without changing the price of tokens. More liquidity = less price impact.
+
+![image](https://user-images.githubusercontent.com/64146291/174471742-0984448f-0a82-4ebc-856f-169a04389893.png)
+
+
+
+
+
